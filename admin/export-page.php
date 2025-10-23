@@ -84,36 +84,10 @@ require_once 'includes/header.php';
         </div>
         <div class="card-body">
             <div class="export-history">
-                <div class="history-item">
-                    <div class="history-info">
-                        <i class="fas fa-file-csv"></i>
-                        <div>
-                            <strong>nguoi_choi_2025-01-15_14-30-25.csv</strong>
-                            <small>Danh sách người chơi - 15/01/2025 14:30</small>
-                        </div>
-                    </div>
-                    <div class="history-actions">
-                        <button class="btn btn-sm btn-secondary">
-                            <i class="fas fa-download"></i>
-                            Tải lại
-                        </button>
-                    </div>
-                </div>
-
-                <div class="history-item">
-                    <div class="history-info">
-                        <i class="fas fa-file-csv"></i>
-                        <div>
-                            <strong>qua_tang_2025-01-15_14-25-10.csv</strong>
-                            <small>Thống kê quà tặng - 15/01/2025 14:25</small>
-                        </div>
-                    </div>
-                    <div class="history-actions">
-                        <button class="btn btn-sm btn-secondary">
-                            <i class="fas fa-download"></i>
-                            Tải lại
-                        </button>
-                    </div>
+                <div class="no-history">
+                    <i class="fas fa-inbox" style="font-size: 3rem; color: #6c757d; margin-bottom: 15px; display: block;"></i>
+                    <h4 style="color: #6c757d; margin-bottom: 10px;">Chưa có lịch sử export</h4>
+                    <p style="color: #6c757d; margin: 0;">Hãy thực hiện export CSV để xem lịch sử tại đây</p>
                 </div>
             </div>
         </div>
@@ -194,6 +168,14 @@ require_once 'includes/header.php';
     display: flex;
     flex-direction: column;
     gap: 15px;
+}
+
+.no-history {
+    text-align: center;
+    padding: 40px 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 2px dashed #dee2e6;
 }
 
 .history-item {

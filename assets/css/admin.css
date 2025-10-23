@@ -533,6 +533,20 @@ body {
     cursor: not-allowed;
 }
 
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: not-allowed;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+}
+
 @media (max-width: 480px) {
     .main-content {
         padding: 15px;

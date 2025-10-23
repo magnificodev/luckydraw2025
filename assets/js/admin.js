@@ -68,8 +68,15 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Save button functionality - only save when button is clicked
+    // Initialize all save buttons as disabled
     const saveButtons = document.querySelectorAll('.save-stock-btn');
+    saveButtons.forEach((button) => {
+        button.disabled = true;
+        button.classList.add('btn-secondary');
+        button.innerHTML = '<i class="fas fa-lock"></i> Chưa thay đổi';
+    });
+
+    // Save button functionality - only save when button is clicked
     saveButtons.forEach((button) => {
         button.addEventListener('click', function () {
             const row = this.closest('tr');
@@ -101,18 +108,12 @@ document.addEventListener('DOMContentLoaded', function () {
             const row = this.closest('tr');
             const saveBtn = row.querySelector('.save-stock-btn');
             
-            // Debug logging
-            console.log('Change detected:', this);
-            console.log('Row found:', row);
-            console.log('Save button found:', saveBtn);
-            
             // Check if save button exists before manipulating it
             if (saveBtn) {
+                saveBtn.disabled = false;
+                saveBtn.classList.remove('btn-secondary');
                 saveBtn.classList.add('btn-warning');
                 saveBtn.innerHTML = '<i class="fas fa-save"></i> Có thay đổi';
-                console.log('Button updated successfully');
-            } else {
-                console.warn('Save button not found for row:', row);
             }
         });
     });
@@ -159,24 +160,20 @@ function updateStock(prizeId, stock, isActive, saveButton = null) {
 
                     // Reset button state on success
                     if (saveButton) {
-                        saveButton.innerHTML = '<i class="fas fa-save"></i> Lưu';
-                        saveButton.disabled = false;
-                        saveButton.classList.remove('btn-warning');
-                        saveButton.classList.add('btn-success');
-
-                        // Reset to normal state after 2 seconds
-                        setTimeout(() => {
-                            saveButton.classList.remove('btn-success');
-                        }, 2000);
+                        saveButton.innerHTML = '<i class="fas fa-lock"></i> Chưa thay đổi';
+                        saveButton.disabled = true;
+                        saveButton.classList.remove('btn-warning', 'btn-success');
+                        saveButton.classList.add('btn-secondary');
                     }
                 } else {
                     showAlert('Có lỗi xảy ra: ' + data.message, 'error');
 
                     // Reset button state on error
                     if (saveButton) {
-                        saveButton.innerHTML = '<i class="fas fa-save"></i> Lưu';
+                        saveButton.innerHTML = '<i class="fas fa-save"></i> Có thay đổi';
                         saveButton.disabled = false;
-                        saveButton.classList.remove('btn-warning');
+                        saveButton.classList.remove('btn-secondary');
+                        saveButton.classList.add('btn-warning');
                     }
                 }
             } catch (e) {
@@ -186,9 +183,10 @@ function updateStock(prizeId, stock, isActive, saveButton = null) {
 
                 // Reset button state on error
                 if (saveButton) {
-                    saveButton.innerHTML = '<i class="fas fa-save"></i> Lưu';
+                    saveButton.innerHTML = '<i class="fas fa-save"></i> Có thay đổi';
                     saveButton.disabled = false;
-                    saveButton.classList.remove('btn-warning');
+                    saveButton.classList.remove('btn-secondary');
+                    saveButton.classList.add('btn-warning');
                 }
             }
         })
@@ -198,9 +196,10 @@ function updateStock(prizeId, stock, isActive, saveButton = null) {
 
             // Reset button state on error
             if (saveButton) {
-                saveButton.innerHTML = '<i class="fas fa-save"></i> Lưu';
+                saveButton.innerHTML = '<i class="fas fa-save"></i> Có thay đổi';
                 saveButton.disabled = false;
-                saveButton.classList.remove('btn-warning');
+                saveButton.classList.remove('btn-secondary');
+                saveButton.classList.add('btn-warning');
             }
         });
 }

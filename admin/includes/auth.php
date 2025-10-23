@@ -6,7 +6,7 @@ require_once '../config/admin-config.php';
 
 // Check if user is logged in
 function isAdminLoggedIn() {
-    return isset($_SESSION[ADMIN_SESSION_KEY]) && 
+    return isset($_SESSION[ADMIN_SESSION_KEY]) &&
            $_SESSION[ADMIN_SESSION_KEY] === true &&
            isset($_SESSION['admin_user_id']) &&
            isset($_SESSION['admin_username']);
@@ -40,11 +40,11 @@ function adminLogin($username, $password) {
         $_SESSION[ADMIN_SESSION_KEY] = true;
         $_SESSION['admin_user_id'] = $user['id'];
         $_SESSION['admin_username'] = $user['username'];
-        
+
         // Debug: Verify session is set
         error_log("Session set - admin_user_id: " . $_SESSION['admin_user_id']);
         error_log("Session set - admin_username: " . $_SESSION['admin_username']);
-        
+
         return true;
     }
 

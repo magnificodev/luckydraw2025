@@ -280,6 +280,15 @@ try {
     align-items: center;
 }
 
+.filter-group .btn {
+    height: 44px;
+    padding: 0 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
 /* Fix filter dropdown arrow spacing and remove default arrow */
 select.form-control {
     -webkit-appearance: none !important; /* For Safari/Chrome */

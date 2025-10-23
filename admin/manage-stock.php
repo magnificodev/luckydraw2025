@@ -329,6 +329,15 @@ input:checked + .slider:before {
     box-shadow: 0 1px 2px rgba(2, 209, 94, 0.3);
 }
 
+/* Fix filter dropdown arrow spacing */
+select.form-control {
+    padding-right: 35px !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e") !important;
+    background-position: right 12px center !important;
+    background-repeat: no-repeat !important;
+    background-size: 16px !important;
+}
+
 /* Make distributed count badge larger and more visible */
 .badge.badge-info {
     font-size: 0.9rem !important;

@@ -30,46 +30,30 @@ $screen = in_array($screen, [1, 2, 3]) ? $screen : 1;
         <!-- Screen 1: Phone Number Input -->
         <div id="screen1" class="screen active">
             <div class="content">
-                <!-- VPBank Logo and Solution Day -->
-                <div class="header">
-                    <div class="logo-section">
-                        <div class="vpbank-logo">VPBank</div>
-                        <div class="solution-day">SOLUTION DAY</div>
-                    </div>
-                </div>
-
-                <!-- Main Content -->
-                <div class="main-content">
-                    <div class="title-section">
-                        <h1 class="title-line1">Nhập</h1>
-                        <h1 class="title-line2">SỐ ĐIỆN THOẠI</h1>
-                        <h1 class="title-line3">của bạn</h1>
-                    </div>
-
-                    <div class="input-section">
-                        <form id="phoneForm" method="POST" action="process.php">
-                            <input
-                                type="tel"
-                                id="phoneInput"
-                                name="phone"
-                                placeholder="Nhập số điện thoại của bạn"
-                                maxlength="11"
-                                value="<?php echo htmlspecialchars($_SESSION['current_phone']); ?>"
-                                required
-                            />
-                            <div id="phoneError" class="error-message">
-                                <?php
-                                if (isset($_SESSION['error'])) {
-                                    echo htmlspecialchars($_SESSION['error']);
-                                    unset($_SESSION['error']);
-                                }
-                                ?>
-                            </div>
-                            <button type="submit" id="startButton" class="start-button">
-                                <img src="assets/images/start-button.png" alt="Bắt đầu vòng quay" />
-                            </button>
-                        </form>
-                    </div>
+                <!-- Form Section Only -->
+                <div class="form-section">
+                    <form id="phoneForm" method="POST" action="process.php">
+                        <input
+                            type="tel"
+                            id="phoneInput"
+                            name="phone"
+                            placeholder="Nhập số điện thoại của bạn"
+                            maxlength="11"
+                            value="<?php echo htmlspecialchars($_SESSION['current_phone']); ?>"
+                            required
+                        />
+                        <div id="phoneError" class="error-message">
+                            <?php
+                            if (isset($_SESSION['error'])) {
+                                echo htmlspecialchars($_SESSION['error']);
+                                unset($_SESSION['error']);
+                            }
+                            ?>
+                        </div>
+                        <button type="submit" id="startButton" class="start-button">
+                            <img src="assets/images/start-button.png" alt="Bắt đầu vòng quay" />
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

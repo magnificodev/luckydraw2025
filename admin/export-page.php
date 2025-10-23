@@ -99,7 +99,7 @@ require_once 'includes/header.php';
                         </button>
                     </div>
                 </div>
-                
+
                 <div class="history-item">
                     <div class="history-info">
                         <i class="fas fa-file-csv"></i>
@@ -237,13 +237,13 @@ require_once 'includes/header.php';
     .export-options {
         grid-template-columns: 1fr;
     }
-    
+
     .history-item {
         flex-direction: column;
         align-items: flex-start;
         gap: 15px;
     }
-    
+
     .history-actions {
         width: 100%;
         justify-content: flex-end;
@@ -256,17 +256,17 @@ function exportCSV(type) {
     const form = document.createElement('form');
     form.method = 'POST';
     form.action = 'export.php';
-    
+
     const input = document.createElement('input');
     input.type = 'hidden';
     input.name = 'export_type';
     input.value = type;
-    
+
     form.appendChild(input);
     document.body.appendChild(form);
     form.submit();
     document.body.removeChild(form);
-    
+
     // Show loading message
     showAlert('Đang tạo file CSV...', 'info');
 }

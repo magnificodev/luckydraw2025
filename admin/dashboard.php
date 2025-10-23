@@ -6,38 +6,38 @@ try {
     // Total players
     $stmt = $pdo->query("SELECT COUNT(*) as total FROM participants");
     $totalPlayers = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
-    
+
     // Prizes distributed
     $stmt = $pdo->query("SELECT COUNT(*) as total FROM participants");
     $prizesDistributed = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
-    
+
     // Remaining stock
     $stmt = $pdo->query("SELECT SUM(stock) as total FROM prizes WHERE is_active = 1");
     $remainingStock = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
-    
+
     // Today's spins
     $stmt = $pdo->query("SELECT COUNT(*) as total FROM participants WHERE DATE(created_at) = CURDATE()");
     $todaySpins = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
-    
+
     // Recent players (last 10)
     $stmt = $pdo->query("
-        SELECT p.phone_number, pr.name as prize_name, p.created_at 
-        FROM participants p 
-        JOIN prizes pr ON p.prize_id = pr.id 
-        ORDER BY p.created_at DESC 
+        SELECT p.phone_number, pr.name as prize_name, p.created_at
+        FROM participants p
+        JOIN prizes pr ON p.prize_id = pr.id
+        ORDER BY p.created_at DESC
         LIMIT 10
     ");
     $recentPlayers = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
+
     // Prize statistics
     $stmt = $pdo->query("
         SELECT pr.name, ps.count, pr.stock, pr.is_active
-        FROM prizes pr 
-        LEFT JOIN prize_statistics ps ON pr.id = ps.prize_id 
+        FROM prizes pr
+        LEFT JOIN prize_statistics ps ON pr.id = ps.prize_id
         ORDER BY ps.count DESC, pr.name ASC
     ");
     $prizeStats = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
+
 } catch(PDOException $e) {
     $error = "Lỗi khi tải dữ liệu: " . $e->getMessage();
 }
@@ -60,7 +60,7 @@ try {
             <div class="stat-value"><?php echo number_format($totalPlayers); ?></div>
             <div class="stat-label">Tổng người chơi</div>
         </div>
-        
+
         <div class="stat-card">
             <div class="stat-icon">
                 <i class="fas fa-gift"></i>
@@ -68,7 +68,7 @@ try {
             <div class="stat-value"><?php echo number_format($prizesDistributed); ?></div>
             <div class="stat-label">Quà đã phát</div>
         </div>
-        
+
         <div class="stat-card">
             <div class="stat-icon">
                 <i class="fas fa-boxes"></i>
@@ -76,7 +76,7 @@ try {
             <div class="stat-value"><?php echo number_format($remainingStock); ?></div>
             <div class="stat-label">Quà còn lại</div>
         </div>
-        
+
         <div class="stat-card">
             <div class="stat-icon">
                 <i class="fas fa-sync-alt"></i>

@@ -14,7 +14,7 @@ $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
-    
+
     if (adminLogin($username, $password)) {
         header('Location: dashboard.php');
         exit();
@@ -39,25 +39,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <h1>Admin Login</h1>
                 <p>Đăng nhập để truy cập bảng điều khiển.</p>
             </div>
-            
+
             <?php if ($error): ?>
             <div class="error-message">
                 <i class="fas fa-exclamation-circle"></i>
                 <?php echo htmlspecialchars($error); ?>
             </div>
             <?php endif; ?>
-            
+
             <form method="POST" class="login-form">
                 <div class="form-group">
                     <label for="username">Username</label>
                     <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>" required>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="password">Password</label>
                     <input type="password" id="password" name="password" required>
                 </div>
-                
+
                 <button type="submit" class="login-btn">
                     <i class="fas fa-sign-in-alt"></i>
                     Đăng nhập

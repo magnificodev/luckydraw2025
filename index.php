@@ -38,8 +38,21 @@ if ($screen == 2 && !isset($_SESSION['winning_index'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vòng Quay May Mắn - VPBank Solution Day</title>
     <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+    <?php if (isset($_SESSION['alert_message'])): ?>
+        <script>
+            window.alertMessage = {
+                message: '<?php echo addslashes($_SESSION['alert_message']); ?>',
+                type: '<?php echo $_SESSION['alert_type'] ?? 'info'; ?>'
+            };
+        </script>
+        <?php 
+        unset($_SESSION['alert_message']);
+        unset($_SESSION['alert_type']);
+        ?>
+    <?php endif; ?>
     <?php if ($screen == 1): ?>
         <!-- Screen 1: Phone Number Input -->
         <div id="screen1" class="screen active">
@@ -54,13 +67,8 @@ if ($screen == 2 && !isset($_SESSION['winning_index'])) {
                             required
                         />
                     </div>
-                    <div id="phoneError" class="error-message<?php echo isset($_SESSION['error']) ? ' show' : ''; ?>">
-                    <?php
-                        if (isset($_SESSION['error'])) {
-                            echo htmlspecialchars($_SESSION['error']);
-                            unset($_SESSION['error']);
-                        }
-                    ?>
+                    <div id="phoneError" class="error-message" style="display: none;">
+                        <!-- Error messages now handled by alert popup -->
                     </div>
                 </div>
 

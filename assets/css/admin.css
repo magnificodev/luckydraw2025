@@ -471,43 +471,43 @@ body {
     .admin-content {
         flex-direction: column;
     }
-    
+
     .sidebar {
         width: 100%;
         height: auto;
         border-right: none;
         border-bottom: 1px solid #e9ecef;
     }
-    
+
     .nav-menu {
         display: flex;
         overflow-x: auto;
         padding: 10px 15px;
     }
-    
+
     .nav-item {
         margin-bottom: 0;
         margin-right: 10px;
         flex-shrink: 0;
     }
-    
+
     .nav-link span {
         display: none;
     }
-    
+
     .dashboard-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .search-filter {
         flex-direction: column;
         align-items: stretch;
     }
-    
+
     .search-box {
         min-width: auto;
     }
-    
+
     .form-row {
         grid-template-columns: 1fr;
     }
@@ -517,15 +517,15 @@ body {
     .main-content {
         padding: 15px;
     }
-    
+
     .card {
         padding: 20px;
     }
-    
+
     .stat-card {
         padding: 20px;
     }
-    
+
     .stat-value {
         font-size: 2rem;
     }

@@ -4,16 +4,16 @@ require_once 'includes/header.php';
 // Handle AJAX requests
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     header('Content-Type: application/json');
-    
+
     if ($_POST['action'] === 'update_stock') {
         $prizeId = (int)$_POST['prize_id'];
         $stock = (int)$_POST['stock'];
         $isActive = (bool)$_POST['is_active'];
-        
+
         try {
             $stmt = $pdo->prepare("UPDATE prizes SET stock = ?, is_active = ? WHERE id = ?");
             $stmt->execute([$stock, $isActive, $prizeId]);
-            
+
             echo json_encode(['success' => true, 'message' => 'Cập nhật thành công']);
         } catch(PDOException $e) {
             echo json_encode(['success' => false, 'message' => 'Lỗi: ' . $e->getMessage()]);
@@ -26,36 +26,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 try {
     $search = $_GET['search'] ?? '';
     $status = $_GET['status'] ?? 'all';
-    
+
     $whereConditions = [];
     $params = [];
-    
+
     if (!empty($search)) {
         $whereConditions[] = "pr.name LIKE ?";
         $params[] = "%$search%";
     }
-    
+
     if ($status === 'active') {
         $whereConditions[] = "pr.is_active = 1";
     } elseif ($status === 'inactive') {
         $whereConditions[] = "pr.is_active = 0";
     }
-    
+
     $whereClause = !empty($whereConditions) ? 'WHERE ' . implode(' AND ', $whereConditions) : '';
-    
+
     $sql = "
-        SELECT pr.id, pr.name, pr.display_order, pr.stock, pr.is_active, 
+        SELECT pr.id, pr.name, pr.display_order, pr.stock, pr.is_active,
                COALESCE(ps.count, 0) as distributed_count
-        FROM prizes pr 
-        LEFT JOIN prize_statistics ps ON pr.id = ps.prize_id 
+        FROM prizes pr
+        LEFT JOIN prize_statistics ps ON pr.id = ps.prize_id
         $whereClause
         ORDER BY pr.display_order ASC
     ";
-    
+
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
     $prizes = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
+
 } catch(PDOException $e) {
     $error = "Lỗi khi tải dữ liệu: " . $e->getMessage();
     $prizes = [];
@@ -73,8 +73,8 @@ try {
     <!-- Search and Filter -->
     <div class="search-filter">
         <div class="search-box">
-            <input type="text" class="form-control search-input" placeholder="Tìm kiếm quà tặng..." 
-                   value="<?php echo htmlspecialchars($search); ?>" 
+            <input type="text" class="form-control search-input" placeholder="Tìm kiếm quà tặng..."
+                   value="<?php echo htmlspecialchars($search); ?>"
                    onkeyup="if(event.key==='Enter') this.form.submit()">
         </div>
         <div class="filter-group">
@@ -112,11 +112,11 @@ try {
                             <strong><?php echo htmlspecialchars($prize['name']); ?></strong>
                         </td>
                         <td>
-                            <input type="number" 
-                                   class="form-control stock-input" 
+                            <input type="number"
+                                   class="form-control stock-input"
                                    value="<?php echo $prize['stock']; ?>"
                                    data-prize-id="<?php echo $prize['id']; ?>"
-                                   min="0" 
+                                   min="0"
                                    style="width: 80px; display: inline-block;">
                         </td>
                         <td>
@@ -124,15 +124,15 @@ try {
                         </td>
                         <td>
                             <label class="switch">
-                                <input type="checkbox" 
-                                       class="active-toggle" 
+                                <input type="checkbox"
+                                       class="active-toggle"
                                        data-prize-id="<?php echo $prize['id']; ?>"
                                        <?php echo $prize['is_active'] ? 'checked' : ''; ?>>
                                 <span class="slider"></span>
                             </label>
                         </td>
                         <td>
-                            <button class="btn btn-sm btn-primary" 
+                            <button class="btn btn-sm btn-primary"
                                     onclick="updateStock(<?php echo $prize['id']; ?>)">
                                 <i class="fas fa-save"></i>
                                 Lưu
@@ -255,13 +255,13 @@ function updateStock(prizeId) {
     const row = document.querySelector(`input[data-prize-id="${prizeId}"]`).closest('tr');
     const stock = row.querySelector('.stock-input').value;
     const isActive = row.querySelector('.active-toggle').checked;
-    
+
     const formData = new FormData();
     formData.append('action', 'update_stock');
     formData.append('prize_id', prizeId);
     formData.append('stock', stock);
     formData.append('is_active', isActive ? '1' : '0');
-    
+
     fetch('manage-stock.php', {
         method: 'POST',
         body: formData

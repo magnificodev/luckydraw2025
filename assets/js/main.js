@@ -17,6 +17,7 @@ let isSpinning = false;
 document.addEventListener('DOMContentLoaded', function () {
     setupEventListeners();
     showErrorFromSession();
+    checkForAlertMessage();
 });
 
 // Event Listeners Setup
@@ -69,6 +70,51 @@ function clearError() {
 // Show error from PHP session
 function showErrorFromSession() {
     // This will be handled by PHP session display
+}
+
+// Check for alert message from backend
+function checkForAlertMessage() {
+    if (window.alertMessage) {
+        showAlertPopup(window.alertMessage.message, window.alertMessage.type);
+    }
+}
+
+// Show alert popup
+function showAlertPopup(message, type = 'info') {
+    const alertOverlay = document.createElement('div');
+    alertOverlay.className = 'alert-overlay';
+    
+    const alertBox = document.createElement('div');
+    alertBox.className = `alert-box alert-${type}`;
+    alertBox.innerHTML = `
+        <div class="alert-icon">
+            <i class="fas fa-${type === 'error' ? 'exclamation-triangle' : 'info-circle'}"></i>
+        </div>
+        <div class="alert-content">
+            <h3>Thông báo</h3>
+            <p>${message}</p>
+            <button class="alert-btn" onclick="closeAlert()">OK</button>
+        </div>
+    `;
+    
+    alertOverlay.appendChild(alertBox);
+    document.body.appendChild(alertOverlay);
+    
+    // Auto show with animation
+    setTimeout(() => {
+        alertOverlay.classList.add('show');
+    }, 100);
+}
+
+// Close alert popup
+function closeAlert() {
+    const alertOverlay = document.querySelector('.alert-overlay');
+    if (alertOverlay) {
+        alertOverlay.classList.remove('show');
+        setTimeout(() => {
+            alertOverlay.remove();
+        }, 300);
+    }
 }
 
 // Loading State Management

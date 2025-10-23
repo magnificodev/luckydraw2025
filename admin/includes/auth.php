@@ -18,18 +18,18 @@ function requireAuth() {
 // Login function
 function adminLogin($username, $password) {
     global $pdo;
-    
+
     $stmt = $pdo->prepare("SELECT id, username, password_hash FROM admin_users WHERE username = ?");
     $stmt->execute([$username]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+
     if ($user && password_verify($password, $user['password_hash'])) {
         $_SESSION[ADMIN_SESSION_KEY] = true;
         $_SESSION['admin_user_id'] = $user['id'];
         $_SESSION['admin_username'] = $user['username'];
         return true;
     }
-    
+
     return false;
 }
 

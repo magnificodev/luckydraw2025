@@ -10,63 +10,63 @@ try {
     $page = (int)($_GET['page'] ?? 1);
     $limit = 20;
     $offset = ($page - 1) * $limit;
-    
+
     $whereConditions = [];
     $params = [];
-    
+
     if (!empty($search)) {
         $whereConditions[] = "p.phone_number LIKE ?";
         $params[] = "%$search%";
     }
-    
+
     if ($prizeFilter !== 'all') {
         $whereConditions[] = "p.prize_id = ?";
         $params[] = $prizeFilter;
     }
-    
+
     if (!empty($dateFrom)) {
         $whereConditions[] = "DATE(p.created_at) >= ?";
         $params[] = $dateFrom;
     }
-    
+
     if (!empty($dateTo)) {
         $whereConditions[] = "DATE(p.created_at) <= ?";
         $params[] = $dateTo;
     }
-    
+
     $whereClause = !empty($whereConditions) ? 'WHERE ' . implode(' AND ', $whereConditions) : '';
-    
+
     // Get total count
     $countSql = "
-        SELECT COUNT(*) as total 
-        FROM participants p 
-        JOIN prizes pr ON p.prize_id = pr.id 
+        SELECT COUNT(*) as total
+        FROM participants p
+        JOIN prizes pr ON p.prize_id = pr.id
         $whereClause
     ";
     $countStmt = $pdo->prepare($countSql);
     $countStmt->execute($params);
     $totalPlayers = $countStmt->fetch(PDO::FETCH_ASSOC)['total'];
     $totalPages = ceil($totalPlayers / $limit);
-    
+
     // Get players data
     $sql = "
-        SELECT p.id, p.phone_number, pr.name as prize_name, p.created_at, 
+        SELECT p.id, p.phone_number, pr.name as prize_name, p.created_at,
                p.ip_address, p.user_agent, p.winning_index
-        FROM participants p 
-        JOIN prizes pr ON p.prize_id = pr.id 
+        FROM participants p
+        JOIN prizes pr ON p.prize_id = pr.id
         $whereClause
-        ORDER BY p.created_at DESC 
+        ORDER BY p.created_at DESC
         LIMIT $limit OFFSET $offset
     ";
-    
+
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
     $players = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
+
     // Get prizes for filter dropdown
     $prizeStmt = $pdo->query("SELECT id, name FROM prizes ORDER BY name ASC");
     $prizes = $prizeStmt->fetchAll(PDO::FETCH_ASSOC);
-    
+
 } catch(PDOException $e) {
     $error = "Lỗi khi tải dữ liệu: " . $e->getMessage();
     $players = [];
@@ -91,33 +91,33 @@ try {
     <div class="search-filter">
         <form method="GET" class="filter-form">
             <div class="search-box">
-                <input type="text" name="search" class="form-control search-input" 
-                       placeholder="Tìm kiếm số điện thoại..." 
+                <input type="text" name="search" class="form-control search-input"
+                       placeholder="Tìm kiếm số điện thoại..."
                        value="<?php echo htmlspecialchars($search); ?>">
             </div>
-            
+
             <div class="filter-group">
                 <select name="prize" class="form-control">
                     <option value="all">Tất cả quà tặng</option>
                     <?php foreach ($prizes as $prize): ?>
-                    <option value="<?php echo $prize['id']; ?>" 
+                    <option value="<?php echo $prize['id']; ?>"
                             <?php echo $prizeFilter == $prize['id'] ? 'selected' : ''; ?>>
                         <?php echo htmlspecialchars($prize['name']); ?>
                     </option>
                     <?php endforeach; ?>
                 </select>
             </div>
-            
+
             <div class="filter-group">
-                <input type="date" name="date_from" class="form-control" 
+                <input type="date" name="date_from" class="form-control"
                        placeholder="Từ ngày" value="<?php echo htmlspecialchars($dateFrom); ?>">
             </div>
-            
+
             <div class="filter-group">
-                <input type="date" name="date_to" class="form-control" 
+                <input type="date" name="date_to" class="form-control"
                        placeholder="Đến ngày" value="<?php echo htmlspecialchars($dateTo); ?>">
             </div>
-            
+
             <div class="filter-group">
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-search"></i>
@@ -165,7 +165,7 @@ try {
                             <code><?php echo htmlspecialchars($player['ip_address']); ?></code>
                         </td>
                         <td>
-                            <button class="btn btn-sm btn-primary" 
+                            <button class="btn btn-sm btn-primary"
                                     onclick="showPlayerDetails(<?php echo htmlspecialchars(json_encode($player)); ?>)">
                                 <i class="fas fa-eye"></i>
                                 Xem
@@ -189,27 +189,27 @@ try {
     <?php if ($totalPages > 1): ?>
     <div class="pagination">
         <div class="pagination-info">
-            Hiển thị <?php echo $offset + 1; ?>-<?php echo min($offset + $limit, $totalPlayers); ?> 
+            Hiển thị <?php echo $offset + 1; ?>-<?php echo min($offset + $limit, $totalPlayers); ?>
             trong tổng số <?php echo number_format($totalPlayers); ?> người
         </div>
         <div class="pagination-links">
             <?php if ($page > 1): ?>
-                <a href="?<?php echo http_build_query(array_merge($_GET, ['page' => $page - 1])); ?>" 
+                <a href="?<?php echo http_build_query(array_merge($_GET, ['page' => $page - 1])); ?>"
                    class="btn btn-sm btn-secondary">
                     <i class="fas fa-chevron-left"></i>
                     Trước
                 </a>
             <?php endif; ?>
-            
+
             <?php for ($i = max(1, $page - 2); $i <= min($totalPages, $page + 2); $i++): ?>
-                <a href="?<?php echo http_build_query(array_merge($_GET, ['page' => $i])); ?>" 
+                <a href="?<?php echo http_build_query(array_merge($_GET, ['page' => $i])); ?>"
                    class="btn btn-sm <?php echo $i == $page ? 'btn-primary' : 'btn-secondary'; ?>">
                     <?php echo $i; ?>
                 </a>
             <?php endfor; ?>
-            
+
             <?php if ($page < $totalPages): ?>
-                <a href="?<?php echo http_build_query(array_merge($_GET, ['page' => $page + 1])); ?>" 
+                <a href="?<?php echo http_build_query(array_merge($_GET, ['page' => $page + 1])); ?>"
                    class="btn btn-sm btn-secondary">
                     Sau
                     <i class="fas fa-chevron-right"></i>
@@ -291,11 +291,11 @@ try {
         flex-direction: column;
         align-items: stretch;
     }
-    
+
     .filter-form .search-box {
         min-width: auto;
     }
-    
+
     .pagination {
         flex-direction: column;
         gap: 15px;
@@ -307,7 +307,7 @@ try {
 function showPlayerDetails(player) {
     const modal = document.getElementById('playerModal');
     const details = document.getElementById('playerDetails');
-    
+
     details.innerHTML = `
         <div class="player-details">
             <div class="detail-row">
@@ -336,7 +336,7 @@ function showPlayerDetails(player) {
             </div>
         </div>
     `;
-    
+
     modal.classList.add('show');
 }
 

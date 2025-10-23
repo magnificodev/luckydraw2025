@@ -10,13 +10,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Validate phone number format
     if (empty($phone)) {
-        $_SESSION['error'] = 'Vui lòng nhập số điện thoại';
+        $_SESSION['alert_message'] = 'Vui lòng nhập số điện thoại';
+        $_SESSION['alert_type'] = 'error';
         header('Location: index.php?screen=1');
         exit();
     }
 
     if (!preg_match('/^0[0-9]{9,10}$/', $phone)) {
-        $_SESSION['error'] = 'Số điện thoại không đúng định dạng';
+        $_SESSION['alert_message'] = 'Số điện thoại không đúng định dạng';
+        $_SESSION['alert_type'] = 'error';
         header('Location: index.php?screen=1');
         exit();
     }
@@ -45,7 +47,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $availablePrizes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 if (empty($availablePrizes)) {
-                    $_SESSION['error'] = 'Xin lỗi, hiện tại không còn quà tặng nào. Vui lòng thử lại sau!';
+                    $_SESSION['alert_message'] = 'Xin lỗi, hiện tại không còn quà tặng nào. Vui lòng thử lại sau!';
+                    $_SESSION['alert_type'] = 'error';
                     header('Location: index.php?screen=1');
                     exit();
                 }
@@ -73,14 +76,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header('Location: index.php?screen=2');
             }
         } catch(PDOException $e) {
-            $_SESSION['error'] = 'Lỗi cơ sở dữ liệu: ' . $e->getMessage();
+            $_SESSION['alert_message'] = 'Lỗi cơ sở dữ liệu: ' . $e->getMessage();
+            $_SESSION['alert_type'] = 'error';
             header('Location: index.php?screen=1');
         }
 
     } elseif ($action === 'spin') {
         // Use the prize that was already selected when entering screen 2
         if (!isset($_SESSION['selected_prize'])) {
-            $_SESSION['error'] = 'Lỗi: Không tìm thấy thông tin phần quà';
+            $_SESSION['alert_message'] = 'Lỗi: Không tìm thấy thông tin phần quà';
+            $_SESSION['alert_type'] = 'error';
             header('Location: index.php?screen=1');
             exit();
         }
@@ -129,7 +134,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Location: index.php?screen=3');
 
         } catch(PDOException $e) {
-            $_SESSION['error'] = 'Lỗi cơ sở dữ liệu: ' . $e->getMessage();
+            $_SESSION['alert_message'] = 'Lỗi cơ sở dữ liệu: ' . $e->getMessage();
+            $_SESSION['alert_type'] = 'error';
             header('Location: index.php?screen=1');
         }
     }

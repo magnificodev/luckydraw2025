@@ -20,18 +20,26 @@ function requireAuth() {
 // Login function
 function adminLogin($username, $password) {
     global $pdo;
-
+    
     $stmt = $pdo->prepare("SELECT id, username, password_hash FROM admin_users WHERE username = ?");
     $stmt->execute([$username]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
+    
+    // Debug logging
+    error_log("adminLogin - Username: $username");
+    error_log("adminLogin - User found: " . ($user ? 'YES' : 'NO'));
+    if ($user) {
+        error_log("adminLogin - Stored hash: " . $user['password_hash']);
+        error_log("adminLogin - Password verify: " . (password_verify($password, $user['password_hash']) ? 'SUCCESS' : 'FAILED'));
+    }
+    
     if ($user && password_verify($password, $user['password_hash'])) {
         $_SESSION[ADMIN_SESSION_KEY] = true;
         $_SESSION['admin_user_id'] = $user['id'];
         $_SESSION['admin_username'] = $user['username'];
         return true;
     }
-
+    
     return false;
 }
 

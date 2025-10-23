@@ -301,24 +301,32 @@ input:checked + .slider:before {
     right: 8px;
     top: 50%;
     transform: translateY(-50%);
-    background: none;
+    background: #02d15e;
     border: none;
-    color: #6c757d;
+    color: white;
     font-size: 16px;
     cursor: pointer;
     padding: 8px;
-    border-radius: 4px;
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
     transition: all 0.3s ease;
     z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .search-btn:hover {
-    background-color: #f8f9fa;
-    color: #02d15e;
+    background-color: #01b84d;
+    transform: translateY(-50%) translateY(-1px);
+    box-shadow: 0 2px 4px rgba(2, 209, 94, 0.3);
 }
 
 .search-btn:active {
-    background-color: #e9ecef;
+    background-color: #02b84a;
+    transform: translateY(-50%) translateY(0);
+    box-shadow: 0 1px 2px rgba(2, 209, 94, 0.3);
 }
 
 /* Make distributed count badge larger and more visible */

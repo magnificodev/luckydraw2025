@@ -343,6 +343,11 @@ body {
 .btn-secondary {
     background: #6c757d;
     color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: not-allowed;
+    transition: all 0.3s ease;
 }
 
 .btn-secondary:hover {
@@ -518,8 +523,8 @@ body {
     background: #ffc107;
     color: #212529;
     border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
+    padding: 10px 20px;
+    border-radius: 6px;
     cursor: pointer;
     transition: all 0.3s ease;
 }
@@ -533,17 +538,44 @@ body {
     cursor: not-allowed;
 }
 
-.btn-secondary {
-    background: #6c757d;
-    color: white;
+/* Save button specific styles */
+.save-stock-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
     border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: not-allowed;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
     transition: all 0.3s ease;
+    min-width: 100px;
+    justify-content: center;
 }
 
-.btn-secondary:hover {
+.save-stock-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.save-stock-btn.btn-primary {
+    background: #02d15e;
+    color: white;
+}
+
+.save-stock-btn.btn-primary:hover:not(:disabled) {
+    background: #02b84a;
+    transform: translateY(-1px);
+}
+
+.save-stock-btn.btn-secondary {
+    background: #6c757d;
+    color: white;
+    cursor: not-allowed;
+}
+
+.save-stock-btn.btn-secondary:hover {
     background: #5a6268;
 }
 

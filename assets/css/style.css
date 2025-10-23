@@ -20,9 +20,7 @@ body {
 .screen {
     position: relative;
     width: 100vw;
-    height: 100vh;
     max-width: 450px; /* 9:16 aspect ratio for mobile */
-    max-height: 800px;
     display: none;
     flex-direction: column;
     align-items: center;
@@ -43,7 +41,6 @@ body {
 @media (min-width: 451px) {
     .screen {
         width: 450px;
-        height: 800px;
         border-radius: 20px;
         box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
     }
@@ -330,9 +327,7 @@ body {
 @media (max-width: 450px) {
     .screen {
         width: 100vw;
-        height: 100vh;
         max-width: none;
-        max-height: none;
         border-radius: 0;
         box-shadow: none;
     }

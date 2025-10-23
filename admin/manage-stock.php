@@ -92,11 +92,29 @@ try {
     $stmt->execute($params);
     $prizes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    // Calculate statistics from ALL data (not just current page)
+    $statsSql = "
+        SELECT 
+            SUM(pr.stock) as total_stock,
+            SUM(CASE WHEN pr.is_active = 1 THEN 1 ELSE 0 END) as active_count,
+            SUM(CASE WHEN pr.is_active = 0 THEN 1 ELSE 0 END) as inactive_count
+        FROM prizes pr
+        WHERE pr.name NOT LIKE '%(2)' AND pr.name NOT LIKE '%(3)' AND pr.name NOT LIKE '%(4)'
+    ";
+    $statsStmt = $pdo->prepare($statsSql);
+    $statsStmt->execute();
+    $statistics = $statsStmt->fetch(PDO::FETCH_ASSOC);
+
 } catch(PDOException $e) {
     $error = "Lỗi khi tải dữ liệu: " . $e->getMessage();
     $prizes = [];
     $totalRecords = 0;
     $totalPages = 0;
+    $statistics = [
+        'total_stock' => 0,
+        'active_count' => 0,
+        'inactive_count' => 0
+    ];
 }
 ?>
 
@@ -114,7 +132,7 @@ try {
             <div class="card">
                 <div class="card-body" style="text-align: center;">
                     <h4 style="color: #02d15e; margin-bottom: 5px;">
-                        <?php echo number_format(array_sum(array_column($prizes, 'stock'))); ?>
+                        <?php echo number_format($statistics['total_stock'] ?? 0); ?>
                     </h4>
                     <p style="color: #6c757d; margin: 0;">Tổng stock</p>
                 </div>
@@ -124,7 +142,7 @@ try {
             <div class="card">
                 <div class="card-body" style="text-align: center;">
                     <h4 style="color: #17a2b8; margin-bottom: 5px;">
-                        <?php echo count(array_filter($prizes, function($p) { return $p['is_active']; })); ?>
+                        <?php echo $statistics['active_count'] ?? 0; ?>
                     </h4>
                     <p style="color: #6c757d; margin: 0;">Đang hoạt động</p>
                 </div>
@@ -134,7 +152,7 @@ try {
             <div class="card">
                 <div class="card-body" style="text-align: center;">
                     <h4 style="color: #dc3545; margin-bottom: 5px;">
-                        <?php echo count(array_filter($prizes, function($p) { return !$p['is_active']; })); ?>
+                        <?php echo $statistics['inactive_count'] ?? 0; ?>
                     </h4>
                     <p style="color: #6c757d; margin: 0;">Tạm dừng</p>
                 </div>

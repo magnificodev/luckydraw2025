@@ -93,9 +93,14 @@ try {
     <!-- Search and Filter -->
     <form method="GET" class="search-filter">
         <div class="search-box">
-            <input type="text" name="search" class="form-control search-input" placeholder="Tìm kiếm quà tặng..."
-                   value="<?php echo htmlspecialchars($search); ?>"
-                   onkeyup="if(event.key==='Enter') this.form.submit()">
+            <div class="search-input-wrapper">
+                <input type="text" name="search" class="form-control search-input" placeholder="Tìm kiếm quà tặng..."
+                       value="<?php echo htmlspecialchars($search); ?>"
+                       onkeyup="if(event.key==='Enter') this.form.submit()">
+                <button type="submit" class="search-btn" title="Tìm kiếm">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
         </div>
         <div class="filter-group">
             <select name="status" class="form-control" onchange="this.form.submit()">
@@ -103,9 +108,6 @@ try {
                 <option value="active" <?php echo $status === 'active' ? 'selected' : ''; ?>>Hoạt động</option>
                 <option value="inactive" <?php echo $status === 'inactive' ? 'selected' : ''; ?>>Tạm dừng</option>
             </select>
-            <button type="button" class="btn btn-primary refresh-btn" onclick="refreshPage()" title="Làm mới">
-                <i class="fas fa-sync-alt"></i>
-            </button>
         </div>
     </form>
 
@@ -264,42 +266,6 @@ input:checked + .slider:before {
     }
 }
 
-/* Refresh button styling to match form controls height */
-button.refresh-btn.btn.btn-primary {
-    height: 44px !important;
-    width: 44px !important;
-    padding: 0 !important;
-    gap: 0 !important;
-    min-width: 44px !important;
-    max-width: 44px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    border-radius: 8px !important;
-    border: 2px solid #e9ecef !important;
-    background-color: #02d15e !important;
-    color: white !important;
-    transition: all 0.3s ease !important;
-    flex-shrink: 0 !important;
-}
-
-button.refresh-btn.btn.btn-primary:hover {
-    background-color: #01b84d !important;
-    border-color: #02d15e !important;
-    transform: translateY(-1px) !important;
-    box-shadow: 0 0 0 3px rgba(2, 209, 94, 0.1) !important;
-}
-
-button.refresh-btn.btn.btn-primary:active {
-    transform: translateY(0) !important;
-    box-shadow: 0 1px 2px rgba(2, 209, 94, 0.3) !important;
-}
-
-button.refresh-btn.btn.btn-primary i {
-    font-size: 16px !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
 
 /* Search and Filter Form */
 .search-filter {
@@ -318,6 +284,43 @@ button.refresh-btn.btn.btn-primary i {
     width: 100%;
 }
 
+/* Search input with icon */
+.search-input-wrapper {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+}
+
+.search-input {
+    padding-right: 45px !important;
+    width: 100% !important;
+}
+
+.search-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #6c757d;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.search-btn:hover {
+    background-color: #f8f9fa;
+    color: #02d15e;
+}
+
+.search-btn:active {
+    background-color: #e9ecef;
+}
+
 /* Make distributed count badge larger and more visible */
 .badge.badge-info {
     font-size: 0.9rem !important;
@@ -333,10 +336,6 @@ button.refresh-btn.btn.btn-primary i {
 </style>
 
 <script>
-function refreshPage() {
-    window.location.href = 'manage-stock.php';
-}
-
 function updateStock(prizeId) {
     const row = document.querySelector(`input[data-prize-id="${prizeId}"]`).closest('tr');
     const stock = row.querySelector('.stock-input').value;

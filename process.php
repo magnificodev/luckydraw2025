@@ -115,8 +115,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Insert new participant with prize and tracking info
             $stmt = $pdo->prepare("INSERT INTO participants (phone_number, prize_name, winning_index, ip_address, user_agent, session_id) VALUES (?, ?, ?, ?, ?, ?)");
             $stmt->execute([
-                $phone, 
-                $selectedPrize, 
+                $phone,
+                $selectedPrize,
                 $_SESSION['winning_index'],
                 $_SERVER['REMOTE_ADDR'] ?? null,
                 $_SERVER['HTTP_USER_AGENT'] ?? null,

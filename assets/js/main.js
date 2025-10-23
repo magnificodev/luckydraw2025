@@ -1,23 +1,5 @@
 // Lucky Draw Wheel App - Main JavaScript Logic (PHP Version)
 
-// Constants and Configuration
-// Note: Prize selection is now handled by backend, this array is kept for reference
-// Order matches the actual wheel layout (clockwise from top)
-const PRIZES = [
-    { name: 'Tai nghe Bluetooth', image: 'tai-nghe.png' }, // Index 0
-    { name: 'Bình thủy tinh', image: 'binh-thuy-tinh.png' }, // Index 1
-    { name: 'Tag hành lý', image: 'tag-hanh-ly.png' }, // Index 2
-    { name: 'Móc khóa', image: 'moc-khoa.png' }, // Index 3
-    { name: 'Túi tote', image: 'tui-tote.png' }, // Index 4
-    { name: 'Bình thủy tinh', image: 'binh-thuy-tinh.png' }, // Index 5
-    { name: 'Móc khóa', image: 'moc-khoa.png' }, // Index 6
-    { name: 'Bịt mắt ngủ', image: 'bit-mat-ngu.png' }, // Index 7
-    { name: 'Tag hành lý', image: 'tag-hanh-ly.png' }, // Index 8
-    { name: 'Túi tote', image: 'tui-tote.png' }, // Index 9
-    { name: 'Ô gấp', image: 'o-gap.png' }, // Index 10
-    { name: 'Mũ bảo hiểm', image: 'mu-bao-hiem.png' }, // Index 11
-];
-
 // DOM Elements
 const phoneInput = document.getElementById('phoneInput');
 const phoneError = document.getElementById('phoneError');
@@ -166,13 +148,12 @@ function animateWheelSpin() {
     // Debug logs
     console.log('=== WHEEL SPIN DEBUG ===');
     console.log('Winning Index:', winningIndex);
-    console.log('Prize:', PRIZES[winningIndex]?.name || 'Unknown');
     console.log('Total Segments:', totalSegments);
     console.log('Degrees per segment:', degPer);
     console.log('Random spins (integer):', spins);
     console.log('Base angle (winningIndex * degPer):', winningIndex * degPer);
-    console.log('Spins angle (spins * 360):', (spins * 360).toFixed(2));
-    console.log('Final angle:', finalAngle.toFixed(2));
+    console.log('Spins angle (spins * 360):', spins * 360);
+    console.log('Final angle:', finalAngle);
     console.log('========================');
 
     targetEl.style.transform = `rotate(${finalAngle}deg)`;

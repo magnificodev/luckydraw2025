@@ -88,48 +88,49 @@ try {
     </div>
 
     <!-- Search and Filter -->
-    <div class="search-filter">
-        <form method="GET" class="filter-form">
-            <div class="search-box">
+    <form method="GET" class="search-filter">
+        <div class="search-box">
+            <div class="search-input-wrapper">
                 <input type="text" name="search" class="form-control search-input"
                        placeholder="Tìm kiếm số điện thoại..."
-                       value="<?php echo htmlspecialchars($search); ?>">
-            </div>
-
-            <div class="filter-group">
-                <select name="prize" class="form-control">
-                    <option value="all">Tất cả quà tặng</option>
-                    <?php foreach ($prizes as $prize): ?>
-                    <option value="<?php echo $prize['id']; ?>"
-                            <?php echo $prizeFilter == $prize['id'] ? 'selected' : ''; ?>>
-                        <?php echo htmlspecialchars($prize['name']); ?>
-                    </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-
-            <div class="filter-group">
-                <input type="date" name="date_from" class="form-control"
-                       placeholder="Từ ngày" value="<?php echo htmlspecialchars($dateFrom); ?>">
-            </div>
-
-            <div class="filter-group">
-                <input type="date" name="date_to" class="form-control"
-                       placeholder="Đến ngày" value="<?php echo htmlspecialchars($dateTo); ?>">
-            </div>
-
-            <div class="filter-group">
-                <button type="submit" class="btn btn-primary">
+                       value="<?php echo htmlspecialchars($search); ?>"
+                       onkeyup="if(event.key==='Enter') this.form.submit()">
+                <button type="submit" class="search-btn" title="Tìm kiếm">
                     <i class="fas fa-search"></i>
-                    Tìm kiếm
                 </button>
-                <a href="players.php" class="btn btn-secondary">
-                    <i class="fas fa-times"></i>
-                    Xóa bộ lọc
-                </a>
             </div>
-        </form>
-    </div>
+        </div>
+
+        <div class="filter-group">
+            <select name="prize" class="form-control" onchange="this.form.submit()">
+                <option value="all">Tất cả quà tặng</option>
+                <?php foreach ($prizes as $prize): ?>
+                <option value="<?php echo $prize['id']; ?>"
+                        <?php echo $prizeFilter == $prize['id'] ? 'selected' : ''; ?>>
+                    <?php echo htmlspecialchars($prize['name']); ?>
+                </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <input type="date" name="date_from" class="form-control"
+                   placeholder="Từ ngày" value="<?php echo htmlspecialchars($dateFrom); ?>"
+                   onchange="this.form.submit()">
+        </div>
+
+        <div class="filter-group">
+            <input type="date" name="date_to" class="form-control"
+                   placeholder="Đến ngày" value="<?php echo htmlspecialchars($dateTo); ?>"
+                   onchange="this.form.submit()">
+        </div>
+
+        <div class="filter-group">
+            <a href="players.php" class="btn btn-secondary" title="Xóa bộ lọc">
+                <i class="fas fa-times"></i>
+            </a>
+        </div>
+    </form>
 
     <!-- Players Table -->
     <div class="table-container">
@@ -262,22 +263,78 @@ try {
     gap: 5px;
 }
 
-.filter-form {
+/* Search and Filter Form */
+.search-filter {
     display: flex;
     gap: 15px;
+    margin-bottom: 20px;
     flex-wrap: wrap;
     align-items: center;
 }
 
-.filter-form .search-box {
+.search-filter form {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+}
+
+/* Search input with icon */
+.search-input-wrapper {
+    position: relative;
     flex: 1;
     min-width: 200px;
 }
 
-.filter-form .filter-group {
+.search-input {
+    padding-right: 45px !important;
+    width: 100% !important;
+}
+
+.search-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #02d15e;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 8px;
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    z-index: 10;
     display: flex;
-    gap: 10px;
     align-items: center;
+    justify-content: center;
+}
+
+.search-btn:hover {
+    background-color: #01b84d;
+    transform: translateY(-50%) translateY(-1px);
+    box-shadow: 0 2px 4px rgba(2, 209, 94, 0.3);
+}
+
+.search-btn:active {
+    background-color: #02b84a;
+    transform: translateY(-50%) translateY(0);
+    box-shadow: 0 1px 2px rgba(2, 209, 94, 0.3);
+}
+
+/* Fix filter dropdown arrow spacing and remove default arrow */
+select.form-control {
+    -webkit-appearance: none !important; /* For Safari/Chrome */
+    -moz-appearance: none !important;    /* For Firefox */
+    appearance: none !important;         /* Standard */
+    padding-right: 35px !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e") !important;
+    background-position: right 12px center !important;
+    background-repeat: no-repeat !important;
+    background-size: 16px !important;
 }
 
 .card-actions {
@@ -287,12 +344,17 @@ try {
 }
 
 @media (max-width: 768px) {
-    .filter-form {
+    .search-filter {
         flex-direction: column;
         align-items: stretch;
     }
 
-    .filter-form .search-box {
+    .search-filter form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-input-wrapper {
         min-width: auto;
     }
 

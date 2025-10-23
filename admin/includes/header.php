@@ -4,6 +4,13 @@ requireAuth();
 
 $currentPage = basename($_SERVER['PHP_SELF'], '.php');
 $admin = getCurrentAdmin();
+
+// Debug: Check if admin session is properly set
+if (!$admin) {
+    error_log("Admin session not found, redirecting to login");
+    header('Location: index.php');
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="vi">

@@ -41,10 +41,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 // Include header for regular page load (not AJAX)
 require_once 'includes/header.php';
 
-// Get prizes with statistics
+// Get prizes with statistics and pagination
 try {
     $search = $_GET['search'] ?? '';
     $status = $_GET['status'] ?? 'all';
+    $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
+    $limit = 10;
+    $offset = ($page - 1) * $limit;
 
     $whereConditions = ["pr.name NOT LIKE '%(2)' AND pr.name NOT LIKE '%(3)' AND pr.name NOT LIKE '%(4)'"];
     $params = [];
@@ -62,7 +65,19 @@ try {
 
     $whereClause = 'WHERE ' . implode(' AND ', $whereConditions);
 
-    // Only show unique products (not duplicates with (2) suffix)
+    // Count total records for pagination
+    $countSql = "
+        SELECT COUNT(*) as total
+        FROM prizes pr
+        LEFT JOIN prize_statistics ps ON pr.id = ps.prize_id
+        $whereClause
+    ";
+    $countStmt = $pdo->prepare($countSql);
+    $countStmt->execute($params);
+    $totalRecords = $countStmt->fetch(PDO::FETCH_ASSOC)['total'];
+    $totalPages = ceil($totalRecords / $limit);
+
+    // Only show unique products (not duplicates with (2) suffix) with pagination
     $sql = "
         SELECT pr.id, pr.name, pr.display_order, pr.stock, pr.is_active,
                COALESCE(ps.count, 0) as distributed_count
@@ -70,6 +85,7 @@ try {
         LEFT JOIN prize_statistics ps ON pr.id = ps.prize_id
         $whereClause
         ORDER BY pr.display_order ASC
+        LIMIT $limit OFFSET $offset
     ";
 
     $stmt = $pdo->prepare($sql);
@@ -79,6 +95,8 @@ try {
 } catch(PDOException $e) {
     $error = "Lỗi khi tải dữ liệu: " . $e->getMessage();
     $prizes = [];
+    $totalRecords = 0;
+    $totalPages = 0;
 }
 ?>
 
@@ -214,6 +232,40 @@ try {
             </tbody>
         </table>
     </div>
+
+    <!-- Pagination -->
+    <?php if ($totalPages > 1): ?>
+    <div class="pagination">
+        <div class="pagination-info">
+            Hiển thị <?php echo $offset + 1; ?>-<?php echo min($offset + $limit, $totalRecords); ?>
+            trong tổng số <?php echo number_format($totalRecords); ?> quà tặng
+        </div>
+        <div class="pagination-links">
+            <?php if ($page > 1): ?>
+                <a href="?<?php echo http_build_query(array_merge($_GET, ['page' => $page - 1])); ?>"
+                   class="btn btn-sm btn-secondary">
+                    <i class="fas fa-chevron-left"></i>
+                    Trước
+                </a>
+            <?php endif; ?>
+
+            <?php for ($i = max(1, $page - 2); $i <= min($totalPages, $page + 2); $i++): ?>
+                <a href="?<?php echo http_build_query(array_merge($_GET, ['page' => $i])); ?>"
+                   class="btn btn-sm <?php echo $i == $page ? 'btn-primary' : 'btn-secondary'; ?>">
+                    <?php echo $i; ?>
+                </a>
+            <?php endfor; ?>
+
+            <?php if ($page < $totalPages): ?>
+                <a href="?<?php echo http_build_query(array_merge($_GET, ['page' => $page + 1])); ?>"
+                   class="btn btn-sm btn-secondary">
+                    Sau
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            <?php endif; ?>
+        </div>
+    </div>
+    <?php endif; ?>
 </div>
 
 <style>
@@ -328,6 +380,32 @@ select.form-control {
 
     .filter-form .search-box {
         min-width: auto;
+    }
+}
+
+/* Pagination Styles */
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding: 20px 0;
+}
+
+.pagination-info {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.pagination-links {
+    display: flex;
+    gap: 5px;
+}
+
+@media (max-width: 768px) {
+    .pagination {
+        flex-direction: column;
+        gap: 15px;
     }
 }
 

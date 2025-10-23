@@ -132,7 +132,7 @@ require_once 'includes/header.php';
                             </div>
                         </div>
                         <?php endforeach; ?>
-                        
+
                         <!-- View All Button -->
                         <div class="view-all-section" style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e9ecef;">
                             <button class="btn btn-primary" onclick="openExportHistoryModal()">
@@ -361,20 +361,30 @@ require_once 'includes/header.php';
     gap: 10px;
 }
 
+.modal-header h3 i {
+    color: #02d15e;
+}
+
 .modal-close {
     background: none;
     border: none;
     font-size: 1.5rem;
     color: #6c757d;
     cursor: pointer;
-    padding: 5px;
+    padding: 8px;
     border-radius: 50%;
     transition: all 0.2s ease;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .modal-close:hover {
     background: #e9ecef;
     color: #2c3e50;
+    border-radius: 50%;
 }
 
 .modal-body {
@@ -509,7 +519,7 @@ function closeExportHistoryModal() {
 function loadExportHistory(page = 1) {
     const content = document.getElementById('exportHistoryContent');
     content.innerHTML = '<div style="text-align: center; padding: 20px;"><i class="fas fa-spinner fa-spin"></i> Đang tải...</div>';
-    
+
     fetch(`export-history-ajax.php?page=${page}`)
         .then(response => response.text())
         .then(data => {

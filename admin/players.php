@@ -8,7 +8,7 @@ try {
     $dateFrom = $_GET['date_from'] ?? '';
     $dateTo = $_GET['date_to'] ?? '';
     $page = (int)($_GET['page'] ?? 1);
-    $limit = 10;
+    $limit = 5;
     $offset = ($page - 1) * $limit;
 
     $whereConditions = [];

@@ -46,7 +46,7 @@ try {
     $search = $_GET['search'] ?? '';
     $status = $_GET['status'] ?? 'all';
     $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
-    $limit = 10;
+    $limit = 5;
     $offset = ($page - 1) * $limit;
 
     $whereConditions = ["pr.name NOT LIKE '%(2)' AND pr.name NOT LIKE '%(3)' AND pr.name NOT LIKE '%(4)'"];

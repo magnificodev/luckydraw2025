@@ -3,7 +3,7 @@ require_once 'includes/auth.php';
 requireAuth();
 
 $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
-$limit = 20; // 20 items per page - chỉ hiển thị 20 file gần nhất
+$limit = 5; // 5 items per page
 $offset = ($page - 1) * $limit;
 
 try {
@@ -12,13 +12,22 @@ try {
         throw new Exception('Database connection not available');
     }
 
-    // Get only the 20 most recent export files (no pagination needed)
+    // Get total count
+    $countStmt = $pdo->query("
+        SELECT COUNT(*) as total
+        FROM export_history eh
+        JOIN admin_users au ON eh.admin_user_id = au.id
+    ");
+    $totalRecords = $countStmt->fetch(PDO::FETCH_ASSOC)['total'];
+    $totalPages = ceil($totalRecords / $limit);
+
+    // Get paginated data
     $stmt = $pdo->prepare("
         SELECT eh.*, au.username
         FROM export_history eh
         JOIN admin_users au ON eh.admin_user_id = au.id
         ORDER BY eh.created_at DESC
-        LIMIT 20
+        LIMIT $limit OFFSET $offset
     ");
     $stmt->execute();
     $exportHistory = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -60,6 +69,65 @@ try {
             </div>
             <?php endforeach; ?>
         </div>
+
+        <!-- Pagination -->
+        <?php if ($totalPages > 1): ?>
+        <div class="modal-pagination">
+            <div class="modal-pagination-links">
+                <!-- First page -->
+                <?php if ($page > 1): ?>
+                    <button class="btn btn-sm btn-secondary" onclick="loadExportHistory(1)" title="Trang đầu">
+                        <i class="fas fa-angle-double-left"></i>
+                    </button>
+                <?php else: ?>
+                    <span class="btn btn-sm btn-disabled" title="Trang đầu">
+                        <i class="fas fa-angle-double-left"></i>
+                    </span>
+                <?php endif; ?>
+
+                <!-- Previous page -->
+                <?php if ($page > 1): ?>
+                    <button class="btn btn-sm btn-secondary" onclick="loadExportHistory(<?php echo $page - 1; ?>)" title="Trang trước">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                <?php else: ?>
+                    <span class="btn btn-sm btn-disabled" title="Trang trước">
+                        <i class="fas fa-chevron-left"></i>
+                    </span>
+                <?php endif; ?>
+
+                <!-- Page numbers -->
+                <?php for ($i = max(1, $page - 2); $i <= min($totalPages, $page + 2); $i++): ?>
+                    <button class="btn btn-sm <?php echo $i == $page ? 'btn-primary' : 'btn-secondary'; ?>"
+                            onclick="loadExportHistory(<?php echo $i; ?>)" title="Trang <?php echo $i; ?>">
+                        <?php echo $i; ?>
+                    </button>
+                <?php endfor; ?>
+
+                <!-- Next page -->
+                <?php if ($page < $totalPages): ?>
+                    <button class="btn btn-sm btn-secondary" onclick="loadExportHistory(<?php echo $page + 1; ?>)" title="Trang sau">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                <?php else: ?>
+                    <span class="btn btn-sm btn-disabled" title="Trang sau">
+                        <i class="fas fa-chevron-right"></i>
+                    </span>
+                <?php endif; ?>
+
+                <!-- Last page -->
+                <?php if ($page < $totalPages): ?>
+                    <button class="btn btn-sm btn-secondary" onclick="loadExportHistory(<?php echo $totalPages; ?>)" title="Trang cuối">
+                        <i class="fas fa-angle-double-right"></i>
+                    </button>
+                <?php else: ?>
+                    <span class="btn btn-sm btn-disabled" title="Trang cuối">
+                        <i class="fas fa-angle-double-right"></i>
+                    </span>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php endif; ?>
     <?php endif;
 
 } catch(PDOException $e) {

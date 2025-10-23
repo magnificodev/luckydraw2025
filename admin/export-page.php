@@ -154,16 +154,10 @@ require_once 'includes/header.php';
 <div id="exportHistoryModal" class="modal" style="display: none;">
     <div class="modal-content" style="max-width: 800px; width: 90%;">
         <div class="modal-header">
-            <div class="modal-title-section">
-                <h3>
-                    <i class="fas fa-history"></i>
-                    Lịch sử Export đầy đủ
-                </h3>
-                <div class="modal-note" style="margin-top: 8px; font-size: 0.85rem; color: #6c757d;">
-                    <i class="fas fa-info-circle" style="color: #02d15e; margin-right: 6px;"></i>
-                    Chỉ hiển thị 20 file export gần nhất
-                </div>
-            </div>
+            <h3>
+                <i class="fas fa-history"></i>
+                Lịch sử Export đầy đủ
+            </h3>
             <button class="modal-close" onclick="closeExportHistoryModal()">
                 <i class="fas fa-times"></i>
             </button>
@@ -392,11 +386,6 @@ require_once 'includes/header.php';
     color: #02d15e !important;
 }
 
-.modal-title-section {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-}
 
 .modal-close:hover {
     background: #e9ecef;
@@ -526,18 +515,18 @@ function downloadExport(filename) {
 
 function openExportHistoryModal() {
     document.getElementById('exportHistoryModal').style.display = 'flex';
-    loadExportHistory();
+    loadExportHistory(1);
 }
 
 function closeExportHistoryModal() {
     document.getElementById('exportHistoryModal').style.display = 'none';
 }
 
-function loadExportHistory() {
+function loadExportHistory(page = 1) {
     const content = document.getElementById('exportHistoryContent');
     content.innerHTML = '<div style="text-align: center; padding: 20px;"><i class="fas fa-spinner fa-spin"></i> Đang tải...</div>';
 
-    fetch('export-history-ajax.php')
+    fetch(`export-history-ajax.php?page=${page}`)
         .then(response => response.text())
         .then(data => {
             content.innerHTML = data;

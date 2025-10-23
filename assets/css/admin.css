@@ -430,6 +430,11 @@ body {
     display: flex;
 }
 
+/* Modal when displayed via JavaScript */
+.modal[style*="flex"] {
+    display: flex !important;
+}
+
 .modal-content {
     background: #ffffff;
     border-radius: 12px;

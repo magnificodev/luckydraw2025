@@ -4,7 +4,7 @@
     </div>
 
     <!-- Logout Confirmation Modal -->
-    <div id="logoutModal" class="modal">
+    <div id="logoutModal" class="modal" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
                 <i class="fas fa-exclamation-triangle"></i>

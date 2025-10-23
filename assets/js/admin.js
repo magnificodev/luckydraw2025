@@ -130,7 +130,7 @@ function confirmLogout() {
     console.log('confirmLogout called');
     const modal = document.getElementById('logoutModal');
     if (modal) {
-        modal.classList.add('show');
+        modal.style.display = 'flex';
     } else {
         console.error('logoutModal not found');
     }
@@ -138,7 +138,9 @@ function confirmLogout() {
 
 function closeModal() {
     const modal = document.getElementById('logoutModal');
-    modal.classList.remove('show');
+    if (modal) {
+        modal.style.display = 'none';
+    }
 }
 
 function performLogout() {

@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     require_once '../config/admin-config.php';
     require_once 'includes/auth.php';
     requireAuth();
-    
+
     header('Content-Type: application/json');
 
     if ($_POST['action'] === 'update_stock') {
@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         try {
             $stmt = $pdo->prepare("UPDATE prizes SET stock = ?, is_active = ? WHERE id = ?");
             $result = $stmt->execute([$stock, $isActive, $prizeId]);
-            
+
             if ($result) {
                 error_log("Stock update successful for prize ID: $prizeId");
                 echo json_encode(['success' => true, 'message' => 'Cập nhật thành công']);

@@ -68,26 +68,40 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Stock update functionality
-    const stockInputs = document.querySelectorAll('.stock-input');
-    stockInputs.forEach((input) => {
-        input.addEventListener('change', function () {
-            const prizeId = this.dataset.prizeId;
-            const newStock = this.value;
-            const isActive = this.closest('tr').querySelector('.active-toggle').checked;
+    // Save button functionality - only save when button is clicked
+    const saveButtons = document.querySelectorAll('.save-stock-btn');
+    saveButtons.forEach((button) => {
+        button.addEventListener('click', function () {
+            const row = this.closest('tr');
+            const prizeId = row.querySelector('.stock-input').dataset.prizeId;
+            const stock = row.querySelector('.stock-input').value;
+            const isActive = row.querySelector('.active-toggle').checked;
 
-            updateStock(prizeId, newStock, isActive);
+            // Validate stock input
+            if (stock < 0) {
+                showAlert('Số lượng stock không thể âm', 'error');
+                return;
+            }
+
+            // Show loading state
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang lưu...';
+            this.disabled = true;
+
+            updateStock(prizeId, stock, isActive, this);
         });
     });
 
+    // Optional: Add visual feedback for unsaved changes
+    const stockInputs = document.querySelectorAll('.stock-input');
     const activeToggles = document.querySelectorAll('.active-toggle');
-    activeToggles.forEach((toggle) => {
-        toggle.addEventListener('change', function () {
-            const prizeId = this.dataset.prizeId;
-            const stock = this.closest('tr').querySelector('.stock-input').value;
-            const isActive = this.checked;
-
-            updateStock(prizeId, stock, isActive);
+    
+    // Add change tracking for visual feedback
+    [...stockInputs, ...activeToggles].forEach((element) => {
+        element.addEventListener('change', function () {
+            const row = this.closest('tr');
+            const saveBtn = row.querySelector('.save-stock-btn');
+            saveBtn.classList.add('btn-warning');
+            saveBtn.innerHTML = '<i class="fas fa-save"></i> Có thay đổi';
         });
     });
 });
@@ -108,7 +122,7 @@ function performLogout() {
 }
 
 // Update stock function
-function updateStock(prizeId, stock, isActive) {
+function updateStock(prizeId, stock, isActive, saveButton = null) {
     const formData = new FormData();
     formData.append('action', 'update_stock');
     formData.append('prize_id', prizeId);
@@ -130,19 +144,52 @@ function updateStock(prizeId, stock, isActive) {
                 const data = JSON.parse(text);
                 if (data.success) {
                     showAlert('Cập nhật thành công!', 'success');
+                    
+                    // Reset button state on success
+                    if (saveButton) {
+                        saveButton.innerHTML = '<i class="fas fa-save"></i> Lưu';
+                        saveButton.disabled = false;
+                        saveButton.classList.remove('btn-warning');
+                        saveButton.classList.add('btn-success');
+                        
+                        // Reset to normal state after 2 seconds
+                        setTimeout(() => {
+                            saveButton.classList.remove('btn-success');
+                        }, 2000);
+                    }
                 } else {
                     showAlert('Có lỗi xảy ra: ' + data.message, 'error');
+                    
+                    // Reset button state on error
+                    if (saveButton) {
+                        saveButton.innerHTML = '<i class="fas fa-save"></i> Lưu';
+                        saveButton.disabled = false;
+                        saveButton.classList.remove('btn-warning');
+                    }
                 }
             } catch (e) {
                 console.error('JSON parse error:', e);
                 console.error('Response text:', text);
                 showAlert('Server trả về dữ liệu không hợp lệ', 'error');
+                
+                // Reset button state on error
+                if (saveButton) {
+                    saveButton.innerHTML = '<i class="fas fa-save"></i> Lưu';
+                    saveButton.disabled = false;
+                    saveButton.classList.remove('btn-warning');
+                }
             }
         })
         .catch((error) => {
             console.error('Fetch error:', error);
             showAlert('Có lỗi xảy ra khi cập nhật: ' + error.message, 'error');
-            console.error('Error:', error);
+            
+            // Reset button state on error
+            if (saveButton) {
+                saveButton.innerHTML = '<i class="fas fa-save"></i> Lưu';
+                saveButton.disabled = false;
+                saveButton.classList.remove('btn-warning');
+            }
         });
 }
 

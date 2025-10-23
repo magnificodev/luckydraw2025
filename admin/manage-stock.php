@@ -237,26 +237,44 @@ try {
     <?php if ($totalPages > 1): ?>
     <div class="pagination">
         <div class="pagination-links">
+            <!-- First page -->
             <?php if ($page > 1): ?>
-                <a href="?<?php echo http_build_query(array_merge($_GET, ['page' => $page - 1])); ?>"
-                   class="btn btn-sm btn-secondary">
-                    <i class="fas fa-chevron-left"></i>
-                    Trước
+                <a href="?<?php echo http_build_query(array_merge($_GET, ['page' => 1])); ?>"
+                   class="btn btn-sm btn-secondary" title="Trang đầu">
+                    <i class="fas fa-angle-double-left"></i>
                 </a>
             <?php endif; ?>
 
+            <!-- Previous page -->
+            <?php if ($page > 1): ?>
+                <a href="?<?php echo http_build_query(array_merge($_GET, ['page' => $page - 1])); ?>"
+                   class="btn btn-sm btn-secondary" title="Trang trước">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+            <?php endif; ?>
+
+            <!-- Page numbers -->
             <?php for ($i = max(1, $page - 2); $i <= min($totalPages, $page + 2); $i++): ?>
                 <a href="?<?php echo http_build_query(array_merge($_GET, ['page' => $i])); ?>"
-                   class="btn btn-sm <?php echo $i == $page ? 'btn-primary' : 'btn-secondary'; ?>">
+                   class="btn btn-sm <?php echo $i == $page ? 'btn-primary' : 'btn-secondary'; ?>"
+                   title="Trang <?php echo $i; ?>">
                     <?php echo $i; ?>
                 </a>
             <?php endfor; ?>
 
+            <!-- Next page -->
             <?php if ($page < $totalPages): ?>
                 <a href="?<?php echo http_build_query(array_merge($_GET, ['page' => $page + 1])); ?>"
-                   class="btn btn-sm btn-secondary">
-                    Sau
+                   class="btn btn-sm btn-secondary" title="Trang sau">
                     <i class="fas fa-chevron-right"></i>
+                </a>
+            <?php endif; ?>
+
+            <!-- Last page -->
+            <?php if ($page < $totalPages): ?>
+                <a href="?<?php echo http_build_query(array_merge($_GET, ['page' => $totalPages])); ?>"
+                   class="btn btn-sm btn-secondary" title="Trang cuối">
+                    <i class="fas fa-angle-double-right"></i>
                 </a>
             <?php endif; ?>
         </div>
@@ -403,40 +421,61 @@ select.form-control {
     font-weight: 500;
     transition: all 0.2s ease;
     border: 1px solid #dee2e6;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    user-select: none;
 }
 
 .pagination-links .btn:hover {
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    cursor: pointer;
+}
+
+.pagination-links .btn:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
 .pagination-links .btn-primary {
     background-color: #02d15e;
     border-color: #02d15e;
     color: white;
+    cursor: pointer;
+}
+
+.pagination-links .btn-primary:hover {
+    background-color: #01b84d;
+    border-color: #01b84d;
+    cursor: pointer;
 }
 
 .pagination-links .btn-secondary {
     background-color: white;
     border-color: #dee2e6;
     color: #6c757d;
+    cursor: pointer;
 }
 
 .pagination-links .btn-secondary:hover {
     background-color: #f8f9fa;
     border-color: #02d15e;
     color: #02d15e;
+    cursor: pointer;
 }
 
 @media (max-width: 768px) {
     .pagination {
         padding: 12px 0;
     }
-    
+
     .pagination-links {
         gap: 6px;
     }
-    
+
     .pagination-links .btn {
         min-width: 36px;
         height: 36px;

@@ -214,7 +214,22 @@ try {
             <?php endif; ?>
 
             <!-- Page numbers -->
-            <?php for ($i = max(1, $page - 2); $i <= min($totalPages, $page + 2); $i++): ?>
+                           <?php
+                           $num_links = 3; // Display maximum 3 page links
+                           $start_page = $page - floor($num_links / 2);
+                           $end_page = $page + floor($num_links / 2);
+
+                           if ($start_page < 1) {
+                               $start_page = 1;
+                               $end_page = min($totalPages, $num_links);
+                           }
+
+                           if ($end_page > $totalPages) {
+                               $end_page = $totalPages;
+                               $start_page = max(1, $totalPages - $num_links + 1);
+                           }
+
+                           for ($i = $start_page; $i <= $end_page; $i++): ?>
                 <a href="?<?php echo http_build_query(array_merge($_GET, ['page' => $i])); ?>"
                    class="btn btn-sm <?php echo $i == $page ? 'btn-primary' : 'btn-secondary'; ?>"
                    title="Trang <?php echo $i; ?>">

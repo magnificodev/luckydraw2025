@@ -317,6 +317,19 @@ button.refresh-btn.btn.btn-primary i {
     align-items: center;
     width: 100%;
 }
+
+/* Make distributed count badge larger and more visible */
+.badge.badge-info {
+    font-size: 0.9rem !important;
+    font-weight: 700 !important;
+    padding: 8px 12px !important;
+    border-radius: 6px !important;
+    background-color: #17a2b8 !important;
+    color: white !important;
+    min-width: 40px !important;
+    text-align: center !important;
+    display: inline-block !important;
+}
 </style>
 
 <script>

@@ -157,6 +157,9 @@ require_once 'includes/header.php';
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     border: 1px solid #e9ecef;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .export-card:hover {
@@ -210,6 +213,21 @@ require_once 'includes/header.php';
     left: 0;
     color: #02d15e;
     font-weight: bold;
+}
+
+.export-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.export-content .btn {
+    margin-top: auto;
+    width: 100%;
+    padding: 12px 20px;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.3s ease;
 }
 
 .export-history {

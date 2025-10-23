@@ -155,9 +155,9 @@ try {
                                     <td><?php echo number_format($prize['stock']); ?></td>
                                     <td>
                                         <?php if ($prize['is_active']): ?>
-                                            <span class="badge badge-success">Hoạt động</span>
+                                            <span class="badge badge-success status-badge">Hoạt động</span>
                                         <?php else: ?>
-                                            <span class="badge badge-danger">Tạm dừng</span>
+                                            <span class="badge badge-danger status-badge">Tạm dừng</span>
                                         <?php endif; ?>
                                     </td>
                                 </tr>
@@ -193,6 +193,16 @@ try {
     .row {
         grid-template-columns: 1fr;
     }
+}
+
+.status-badge {
+    min-width: 80px !important;
+    text-align: center !important;
+    display: inline-block !important;
+    padding: 6px 12px !important;
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    border-radius: 4px !important;
 }
 </style>
 

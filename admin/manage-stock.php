@@ -236,10 +236,6 @@ try {
     <!-- Pagination -->
     <?php if ($totalPages > 1): ?>
     <div class="pagination">
-        <div class="pagination-info">
-            Hiển thị <?php echo $offset + 1; ?>-<?php echo min($offset + $limit, $totalRecords); ?>
-            trong tổng số <?php echo number_format($totalRecords); ?> quà tặng
-        </div>
         <div class="pagination-links">
             <?php if ($page > 1): ?>
                 <a href="?<?php echo http_build_query(array_merge($_GET, ['page' => $page - 1])); ?>"
@@ -386,15 +382,10 @@ select.form-control {
 /* Pagination Styles */
 .pagination {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     margin-top: 20px;
     padding: 20px 0;
-}
-
-.pagination-info {
-    color: #6c757d;
-    font-size: 0.9rem;
 }
 
 .pagination-links {

@@ -69,7 +69,7 @@ if ($screen == 2 && !isset($_SESSION['winning_index'])) {
                             required
                         />
                     </div>
-                    <div id="phoneError" class="error-message" style="display: none;">
+                    <div id="phoneError" class="error-message">
                         <!-- Error messages now handled by alert popup -->
                     </div>
                 </div>

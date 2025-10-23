@@ -69,7 +69,7 @@ if (!$admin) {
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link" onclick="confirmLogout(); return false;">
+                        <a href="#" class="nav-link" onclick="confirmLogout(); return false;" style="color: #dc3545;">
                             <i class="fas fa-sign-out-alt"></i>
                             <span>Đăng xuất</span>
                         </a>

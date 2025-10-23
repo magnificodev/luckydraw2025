@@ -40,7 +40,6 @@ $screen = in_array($screen, [1, 2, 3]) ? $screen : 1;
                                 name="phone"
                                 placeholder="Nhập số điện thoại của bạn"
                                 maxlength="11"
-                                value="<?php echo htmlspecialchars($_SESSION['current_phone']); ?>"
                                 required
                             />
                         </div>

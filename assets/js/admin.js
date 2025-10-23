@@ -119,16 +119,29 @@ function updateStock(prizeId, stock, isActive) {
         method: 'POST',
         body: formData,
     })
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.success) {
-                showAlert('Cập nhật thành công!', 'success');
-            } else {
-                showAlert('Có lỗi xảy ra: ' + data.message, 'error');
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.text(); // Get as text first
+        })
+        .then((text) => {
+            try {
+                const data = JSON.parse(text);
+                if (data.success) {
+                    showAlert('Cập nhật thành công!', 'success');
+                } else {
+                    showAlert('Có lỗi xảy ra: ' + data.message, 'error');
+                }
+            } catch (e) {
+                console.error('JSON parse error:', e);
+                console.error('Response text:', text);
+                showAlert('Server trả về dữ liệu không hợp lệ', 'error');
             }
         })
         .catch((error) => {
-            showAlert('Có lỗi xảy ra khi cập nhật', 'error');
+            console.error('Fetch error:', error);
+            showAlert('Có lỗi xảy ra khi cập nhật: ' + error.message, 'error');
             console.error('Error:', error);
         });
 }

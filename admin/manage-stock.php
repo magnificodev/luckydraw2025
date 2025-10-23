@@ -1,8 +1,14 @@
 <?php
-require_once 'includes/header.php';
-
-// Handle AJAX requests
+// Handle AJAX requests FIRST before any HTML output
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+    // Start session and require auth for AJAX
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    require_once '../config/admin-config.php';
+    require_once 'includes/auth.php';
+    requireAuth();
+    
     header('Content-Type: application/json');
 
     if ($_POST['action'] === 'update_stock') {
@@ -10,17 +16,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $stock = (int)$_POST['stock'];
         $isActive = (bool)$_POST['is_active'];
 
+        // Debug logging
+        error_log("Stock update request - Prize ID: $prizeId, Stock: $stock, Active: " . ($isActive ? 'true' : 'false'));
+
         try {
             $stmt = $pdo->prepare("UPDATE prizes SET stock = ?, is_active = ? WHERE id = ?");
-            $stmt->execute([$stock, $isActive, $prizeId]);
-
-            echo json_encode(['success' => true, 'message' => 'Cập nhật thành công']);
+            $result = $stmt->execute([$stock, $isActive, $prizeId]);
+            
+            if ($result) {
+                error_log("Stock update successful for prize ID: $prizeId");
+                echo json_encode(['success' => true, 'message' => 'Cập nhật thành công']);
+            } else {
+                error_log("Stock update failed for prize ID: $prizeId");
+                echo json_encode(['success' => false, 'message' => 'Không thể cập nhật dữ liệu']);
+            }
         } catch(PDOException $e) {
-            echo json_encode(['success' => false, 'message' => 'Lỗi: ' . $e->getMessage()]);
+            error_log("Stock update error: " . $e->getMessage());
+            echo json_encode(['success' => false, 'message' => 'Lỗi database: ' . $e->getMessage()]);
         }
         exit;
     }
 }
+
+// Include header for regular page load (not AJAX)
+require_once 'includes/header.php';
 
 // Get prizes with statistics
 try {

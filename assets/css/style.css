@@ -20,6 +20,7 @@ body {
 .screen {
     position: relative;
     width: 100vw;
+    height: 100vh;
     max-width: 450px; /* 9:16 aspect ratio for mobile */
     display: none;
     flex-direction: column;
@@ -327,6 +328,7 @@ body {
 @media (max-width: 450px) {
     .screen {
         width: 100vw;
+        height: 100vh;
         max-width: none;
         border-radius: 0;
         box-shadow: none;

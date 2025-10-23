@@ -91,9 +91,9 @@ try {
     </div>
 
     <!-- Search and Filter -->
-    <div class="search-filter">
+    <form method="GET" class="search-filter">
         <div class="search-box">
-            <input type="text" class="form-control search-input" placeholder="Tìm kiếm quà tặng..."
+            <input type="text" name="search" class="form-control search-input" placeholder="Tìm kiếm quà tặng..."
                    value="<?php echo htmlspecialchars($search); ?>"
                    onkeyup="if(event.key==='Enter') this.form.submit()">
         </div>
@@ -107,7 +107,7 @@ try {
                 <i class="fas fa-sync-alt"></i>
             </button>
         </div>
-    </div>
+    </form>
 
     <!-- Prizes Table -->
     <div class="table-container">
@@ -299,6 +299,23 @@ button.refresh-btn.btn.btn-primary i {
     font-size: 16px !important;
     margin: 0 !important;
     padding: 0 !important;
+}
+
+/* Search and Filter Form */
+.search-filter {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.search-filter form {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
 }
 </style>
 

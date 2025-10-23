@@ -41,35 +41,28 @@ body {
     align-items: center;
 }
 
+@media (max-width: 450px) {
+    body {
+        background: url('../images/background.png') no-repeat center center;
+        background-size: cover;
+    }
+}
+
 /* Screen Management - Mobile First 9:16 Aspect Ratio */
 .screen {
-    position: relative;
-    width: 100vw;
     height: 100vh;
-    max-width: 450px; /* 9:16 aspect ratio for mobile */
     display: none;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin: 0 auto;
-    background: #000;
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-    overflow: hidden;
+    aspect-ratio: 9/16;
 }
 
 .screen.active {
     display: flex;
-}
-
-/* Letterbox for larger screens */
-@media (min-width: 451px) {
-    .screen {
-        width: 450px;
-        border-radius: 20px;
-        box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-    }
 }
 
 /* Screen Background Images */
@@ -85,90 +78,62 @@ body {
     background-image: url('../images/background-3.png');
 }
 
-/* Content Container - Mobile Optimized */
-.content {
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    height: 100%;
-    padding: 20px;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    box-sizing: border-box;
-}
-
-/* Header Section - Mobile Optimized */
-.header {
-    margin-bottom: 20px;
-    flex-shrink: 0;
-}
-
-.logo-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-}
-
-.vpbank-logo {
-    color: #dc2626;
-    font-size: 2rem;
-    font-weight: 700;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.solution-day {
-    color: #00ff88;
-    font-size: 1rem;
-    font-weight: 700;
-    text-shadow: 0 0 10px rgba(0, 255, 136, 0.8);
-    letter-spacing: 1px;
-}
-
 /* Screen 1 Styles - Form Only */
-.form-section {
+form#phoneForm {
+    margin-top: 16%;
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100%;
     gap: 20px;
+}
+
+.form-group {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Input Wrapper with Gradient Border */
 .input-wrapper {
-    width: 100%;
+    width: 64%;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 2px;
-    background: linear-gradient(90deg, #4a90e2 0%, #00ff88 100%);
+    background: linear-gradient(45deg, #4a90e2 0%, #00ff88 100%);
     border-radius: 12px;
-    position: relative;
 }
 
 #phoneInput {
-    width: 100%;
-    padding: 12px 16px;
-    font-size: 1.1rem;
-    font-weight: 400;
+    width: 98%;
+    height: 90%;
+    border-radius: 8px;
     border: none;
-    border-radius: 10px;
-    background: white;
     outline: none;
-    transition: all 0.3s ease;
-    box-sizing: border-box;
-}
-
-#phoneInput:focus {
-    transform: scale(1.02);
-    box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+    text-align: center;
+    font-size: 2.2rem;
+    font-family: 'SVN-Gilroy', 'Arial', sans-serif;
+    font-weight: 700;
+    color: #003875;
 }
 
 .error-message {
-    color: #ff4444;
-    font-size: 0.9rem;
     margin-top: 10px;
+    height: 20px;
+    color: #e02f2f;
+    font-size: 0.9rem;
     text-shadow: 0 0 5px rgba(255, 68, 68, 0.8);
+    text-align: center;
+    visibility: hidden;
+}
+
+.error-message.show {
+    visibility: visible;
 }
 
 /* Button Styles */
@@ -206,35 +171,38 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 42px;
     flex-grow: 1;
     justify-content: center;
 }
 
 .wheel-wrapper {
     position: relative;
-    width: 250px;
-    height: 250px;
+    width: 80%;
+    aspect-ratio: 1/1;
 }
 
 .wheel {
     width: 100%;
     height: 100%;
     transition: transform 4s cubic-bezier(0.25, 0.1, 0.25, 1);
+    border-radius: 50%;
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.6), 0 0 40px rgba(0, 255, 136, 0.4),
+        0 0 60px rgba(0, 255, 136, 0.2);
 }
 
 .wheel img {
     width: 100%;
     height: 100%;
+    border-radius: 50%;
 }
 
 .wheel-pointer {
     position: absolute;
-    top: -20px;
+    top: -3%;
     left: 50%;
     transform: translateX(-50%);
-    width: 40px;
-    height: 40px;
+    width: 24%;
     z-index: 10;
 }
 
@@ -243,19 +211,11 @@ body {
     justify-content: center;
 }
 
+.spin-button img {
+    width: 60%;
+}
+
 /* Screen 3 - Prize Display - Mobile Optimized */
-.thank-you {
-    margin-bottom: 20px;
-    flex-shrink: 0;
-}
-
-.thank-you p {
-    color: white;
-    font-size: 1rem;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    line-height: 1.4;
-}
-
 .prize-section {
     display: flex;
     flex-direction: column;
@@ -271,27 +231,13 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.1);
     border-radius: 15px;
-    box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
 }
 
 .prize-image {
     max-width: 120px;
     max-height: 120px;
     object-fit: contain;
-}
-
-.prize-name-container {
-    text-align: center;
-}
-
-.prize-name {
-    color: #00ff88;
-    font-size: 1.8rem;
-    font-weight: 700;
-    text-shadow: 0 0 15px rgba(0, 255, 136, 0.8);
-    transform: perspective(100px) rotateX(10deg);
 }
 
 /* Loading Overlay */
@@ -335,72 +281,5 @@ body {
     }
     100% {
         transform: rotate(360deg);
-    }
-}
-
-/* Responsive Design - Mobile First */
-@media (max-width: 450px) {
-    .screen {
-        width: 100vw;
-        height: 100vh;
-        max-width: none;
-        border-radius: 0;
-        box-shadow: none;
-    }
-
-    .content {
-        padding: 15px;
-    }
-
-    .form-section {
-        gap: 15px;
-    }
-
-    .prize-name {
-        font-size: 1.6rem;
-    }
-
-    .wheel-wrapper {
-        width: 220px;
-        height: 220px;
-    }
-
-    .start-button img,
-    .spin-button img {
-        max-width: 160px;
-    }
-
-    .prize-image-container {
-        width: 140px;
-        height: 140px;
-    }
-
-    .prize-image {
-        max-width: 100px;
-        max-height: 100px;
-    }
-}
-
-@media (max-width: 360px) {
-    .content {
-        padding: 10px;
-    }
-
-    .form-section {
-        gap: 10px;
-    }
-
-    .prize-name {
-        font-size: 1.4rem;
-    }
-
-    .wheel-wrapper {
-        width: 200px;
-        height: 200px;
-    }
-
-    .start-button img,
-    .spin-button img {
-        max-width: 140px;
     }
 }

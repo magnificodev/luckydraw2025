@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (!preg_match('/^0[0-9]{9,10}$/', $phone)) {
-        $_SESSION['error'] = 'Số điện thoại không đúng định dạng. Vui lòng nhập số điện thoại Việt Nam (10-11 số, bắt đầu bằng 0)';
+        $_SESSION['error'] = 'Số điện thoại không đúng định dạng';
         header('Location: index.php?screen=1');
         exit();
     }

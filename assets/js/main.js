@@ -41,11 +41,14 @@ function setupEventListeners() {
         spinForm.addEventListener('submit', handleSpinSubmit);
     }
 
-    // Real-time phone validation
+    // Clear error message when user types (but don't show new errors)
     if (phoneInput) {
         phoneInput.addEventListener('input', function () {
-            clearError();
-            validatePhoneInput();
+            const phone = phoneInput.value.trim();
+            // Only clear error if phone is valid or empty
+            if (!phone || validatePhoneNumber(phone)) {
+                clearError();
+            }
         });
     }
 }
@@ -57,27 +60,19 @@ function validatePhoneNumber(phone) {
     return phoneRegex.test(phone);
 }
 
-function validatePhoneInput() {
-    if (!phoneInput) return true;
-    const phone = phoneInput.value.trim();
-    if (phone && !validatePhoneNumber(phone)) {
-        showError('Số điện thoại không đúng định dạng');
-        return false;
-    }
-    return true;
-}
+// validatePhoneInput function removed - validation only happens on submit
 
 function showError(message) {
     if (phoneError) {
         phoneError.textContent = message;
-        phoneError.style.display = 'block';
+        phoneError.classList.add('show');
     }
 }
 
 function clearError() {
     if (phoneError) {
         phoneError.textContent = '';
-        phoneError.style.display = 'none';
+        phoneError.classList.remove('show');
     }
 }
 
@@ -112,9 +107,7 @@ function handlePhoneSubmit(e) {
 
     if (!validatePhoneNumber(phone)) {
         e.preventDefault();
-        showError(
-            'Số điện thoại không đúng định dạng. Vui lòng nhập số điện thoại Việt Nam (10-11 số, bắt đầu bằng 0)'
-        );
+        showError('Số điện thoại không đúng định dạng');
         return;
     }
 
@@ -122,36 +115,43 @@ function handlePhoneSubmit(e) {
 }
 
 function handleSpinSubmit(e) {
+    // Always prevent default to control animation timing
+    e.preventDefault();
+
     if (isSpinning) {
-        e.preventDefault();
         return;
     }
 
     isSpinning = true;
-    showLoading();
 
-    // Add animation delay before form submission
+    // Animate the wheel first
+    animateWheelSpin();
+
+    // Submit after wheel animation completes (CSS is 4s)
     setTimeout(() => {
-        // Let the form submit naturally
-    }, 100);
+        showLoading();
+        spinForm.submit();
+    }, 4100);
 }
 
 // Wheel Animation for Screen 2
 function animateWheelSpin() {
     if (!wheel) return;
 
-    // Random angle for visual effect (not tied to actual prize)
-    const randomAngle = Math.random() * 360 * 5 + Math.random() * 360;
-    wheel.style.transform = `rotate(${randomAngle}deg)`;
+    // Select a random prize
+    const selectedPrize = PRIZES[Math.floor(Math.random() * PRIZES.length)];
+
+    // Calculate angle to center the pointer on the selected prize
+    // Each segment is 45 degrees (360/8), so center is at angle + 22.5 degrees
+    // We need to rotate the wheel in the opposite direction to center the pointer
+    const segmentCenter = selectedPrize.angle + 22.5;
+    const targetAngle = 360 - segmentCenter;
+
+    // Add multiple full rotations for visual effect (5-8 full rotations)
+    const fullRotations = 5 + Math.random() * 3;
+    const finalAngle = targetAngle + fullRotations * 360;
+
+    wheel.style.transform = `rotate(${finalAngle}deg)`;
 }
 
-// Initialize wheel animation on screen 2
-document.addEventListener('DOMContentLoaded', function () {
-    // Check if we're on screen 2 and animate wheel
-    const screen2 = document.getElementById('screen2');
-    if (screen2 && screen2.classList.contains('active')) {
-        setTimeout(() => {
-            animateWheelSpin();
-        }, 500);
-    }
-});
+// Auto spin on screen 2 removed; wheel spins only on button press

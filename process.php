@@ -27,15 +27,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Check if phone number already exists
         try {
             $pdo = getDatabaseConnection();
-            $stmt = $pdo->prepare("SELECT prize_name, prize_image FROM participants WHERE phone_number = ?");
+            $stmt = $pdo->prepare("SELECT prize_name, winning_index FROM participants WHERE phone_number = ?");
             $stmt->execute([$phone]);
             $result = $stmt->fetch();
 
             if ($result) {
                 // Phone already exists, show existing prize
                 $_SESSION['current_prize'] = [
-                    'name' => $result['prize_name'],
-                    'image' => $result['prize_image']
+                    'name' => $result['prize_name']
                 ];
                 header('Location: index.php?screen=3');
             } else {
@@ -43,18 +42,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Define available prize catalog (12 prizes for 12 segments)
                 // Order matches the actual wheel layout (clockwise from top)
                 $prizes = [
-                    ['name' => 'Tai nghe Bluetooth', 'image' => 'tai-nghe.png'],        // Index 0
-                    ['name' => 'Bình thủy tinh', 'image' => 'binh-thuy-tinh.png'],      // Index 1
-                    ['name' => 'Tag hành lý', 'image' => 'tag-hanh-ly.png'],           // Index 2
-                    ['name' => 'Móc khóa', 'image' => 'moc-khoa.png'],                  // Index 3
-                    ['name' => 'Túi tote', 'image' => 'tui-tote.png'],                  // Index 4
-                    ['name' => 'Bình thủy tinh', 'image' => 'binh-thuy-tinh.png'],      // Index 5
-                    ['name' => 'Móc khóa', 'image' => 'moc-khoa.png'],                  // Index 6
-                    ['name' => 'Bịt mắt ngủ', 'image' => 'bit-mat-ngu.png'],            // Index 7
-                    ['name' => 'Tag hành lý', 'image' => 'tag-hanh-ly.png'],           // Index 8
-                    ['name' => 'Túi tote', 'image' => 'tui-tote.png'],                  // Index 9
-                    ['name' => 'Ô gấp', 'image' => 'o-gap.png'],                        // Index 10
-                    ['name' => 'Mũ bảo hiểm', 'image' => 'mu-bao-hiem.png']             // Index 11
+                    'Tai nghe Bluetooth',        // Index 0
+                    'Bình thủy tinh',            // Index 1
+                    'Tag hành lý',               // Index 2
+                    'Móc khóa',                  // Index 3
+                    'Túi tote',                  // Index 4
+                    'Bình thủy tinh',            // Index 5
+                    'Móc khóa',                  // Index 6
+                    'Bịt mắt ngủ',               // Index 7
+                    'Tag hành lý',               // Index 8
+                    'Túi tote',                  // Index 9
+                    'Ô gấp',                     // Index 10
+                    'Mũ bảo hiểm'                // Index 11
                 ];
 
                 // Wheel has 12 segments; generate winning index in range [0, 11]
@@ -63,11 +62,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 // Map winning index to an actual prize entry
                 $selectedPrize = $prizes[$winningIndex];
-
+                
                 // Debug log
                 error_log("=== BACKEND DEBUG ===");
                 error_log("Winning Index: " . $winningIndex);
-                error_log("Prize: " . $selectedPrize['name']);
+                error_log("Prize: " . $selectedPrize);
                 error_log("Total Segments: " . $totalSegments);
                 error_log("Degrees per segment: " . (360 / $totalSegments));
                 error_log("====================");
@@ -97,15 +96,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $pdo = getDatabaseConnection();
             // Double-check: Ensure phone number hasn't been used since entering screen 2
-            $stmt = $pdo->prepare("SELECT id, prize_name, prize_image FROM participants WHERE phone_number = ?");
+            $stmt = $pdo->prepare("SELECT id, prize_name, winning_index FROM participants WHERE phone_number = ?");
             $stmt->execute([$phone]);
             $existingParticipant = $stmt->fetch();
 
             if ($existingParticipant) {
                 // Phone already exists, redirect to screen 3 with existing prize
                 $_SESSION['current_prize'] = [
-                    'name' => $existingParticipant['prize_name'],
-                    'image' => $existingParticipant['prize_image']
+                    'name' => $existingParticipant['prize_name']
                 ];
                 // Clear session data
                 unset($_SESSION['selected_prize']);
@@ -115,11 +113,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             // Insert new participant with prize
-            $stmt = $pdo->prepare("INSERT INTO participants (phone_number, prize_name, prize_image) VALUES (?, ?, ?)");
-            $stmt->execute([$phone, $selectedPrize['name'], $selectedPrize['image']]);
+            $stmt = $pdo->prepare("INSERT INTO participants (phone_number, prize_name, winning_index) VALUES (?, ?, ?)");
+            $stmt->execute([$phone, $selectedPrize, $_SESSION['winning_index']]);
 
             // Set prize in session
-            $_SESSION['current_prize'] = $selectedPrize;
+            $_SESSION['current_prize'] = ['name' => $selectedPrize];
             // Clear selected prize and winning index from session
             unset($_SESSION['selected_prize']);
             unset($_SESSION['winning_index']);

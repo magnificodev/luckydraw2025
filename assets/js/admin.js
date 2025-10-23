@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
     saveButtons.forEach((button) => {
         button.disabled = true;
         button.classList.add('btn-secondary');
-        button.innerHTML = '<i class="fas fa-lock"></i> Chưa thay đổi';
+        button.innerHTML = '<i class="fas fa-save"></i> Lưu';
     });
 
     // Save button functionality - only save when button is clicked
@@ -107,13 +107,13 @@ document.addEventListener('DOMContentLoaded', function () {
         element.addEventListener('change', function () {
             const row = this.closest('tr');
             const saveBtn = row.querySelector('.save-stock-btn');
-            
+
             // Check if save button exists before manipulating it
             if (saveBtn) {
                 saveBtn.disabled = false;
                 saveBtn.classList.remove('btn-secondary');
-                saveBtn.classList.add('btn-warning');
-                saveBtn.innerHTML = '<i class="fas fa-save"></i> Có thay đổi';
+                saveBtn.classList.add('btn-primary');
+                saveBtn.innerHTML = '<i class="fas fa-save"></i> Lưu';
             }
         });
     });
@@ -160,9 +160,9 @@ function updateStock(prizeId, stock, isActive, saveButton = null) {
 
                     // Reset button state on success
                     if (saveButton) {
-                        saveButton.innerHTML = '<i class="fas fa-lock"></i> Chưa thay đổi';
+                        saveButton.innerHTML = '<i class="fas fa-save"></i> Lưu';
                         saveButton.disabled = true;
-                        saveButton.classList.remove('btn-warning', 'btn-success');
+                        saveButton.classList.remove('btn-primary', 'btn-success');
                         saveButton.classList.add('btn-secondary');
                     }
                 } else {
@@ -170,10 +170,10 @@ function updateStock(prizeId, stock, isActive, saveButton = null) {
 
                     // Reset button state on error
                     if (saveButton) {
-                        saveButton.innerHTML = '<i class="fas fa-save"></i> Có thay đổi';
+                        saveButton.innerHTML = '<i class="fas fa-save"></i> Lưu';
                         saveButton.disabled = false;
                         saveButton.classList.remove('btn-secondary');
-                        saveButton.classList.add('btn-warning');
+                        saveButton.classList.add('btn-primary');
                     }
                 }
             } catch (e) {
@@ -183,10 +183,10 @@ function updateStock(prizeId, stock, isActive, saveButton = null) {
 
                 // Reset button state on error
                 if (saveButton) {
-                    saveButton.innerHTML = '<i class="fas fa-save"></i> Có thay đổi';
+                    saveButton.innerHTML = '<i class="fas fa-save"></i> Lưu';
                     saveButton.disabled = false;
                     saveButton.classList.remove('btn-secondary');
-                    saveButton.classList.add('btn-warning');
+                    saveButton.classList.add('btn-primary');
                 }
             }
         })
@@ -196,10 +196,10 @@ function updateStock(prizeId, stock, isActive, saveButton = null) {
 
             // Reset button state on error
             if (saveButton) {
-                saveButton.innerHTML = '<i class="fas fa-save"></i> Có thay đổi';
+                saveButton.innerHTML = '<i class="fas fa-save"></i> Lưu';
                 saveButton.disabled = false;
                 saveButton.classList.remove('btn-secondary');
-                saveButton.classList.add('btn-warning');
+                saveButton.classList.add('btn-primary');
             }
         });
 }

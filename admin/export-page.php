@@ -369,7 +369,7 @@ require_once 'includes/header.php';
     background: none;
     border: none;
     font-size: 1.5rem;
-    color: #6c757d;
+    color: #02d15e;
     cursor: pointer;
     padding: 8px;
     border-radius: 50%;
@@ -383,7 +383,7 @@ require_once 'includes/header.php';
 
 .modal-close:hover {
     background: #e9ecef;
-    color: #2c3e50;
+    color: #02d15e;
     border-radius: 50%;
 }
 

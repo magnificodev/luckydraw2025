@@ -1,11 +1,5 @@
 // Admin Panel JavaScript
 document.addEventListener('DOMContentLoaded', function () {
-    // Debug: Log all clicks
-    document.addEventListener('click', function(e) {
-        console.log('Click detected on:', e.target);
-        console.log('Click target classes:', e.target.className);
-        console.log('Click target tag:', e.target.tagName);
-    });
     // Theme toggle functionality
     const themeToggle = document.getElementById('themeToggle');
     if (themeToggle) {
@@ -127,7 +121,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // Logout confirmation
 function confirmLogout() {
-    console.log('confirmLogout called');
     const modal = document.getElementById('logoutModal');
     if (modal) {
         modal.style.display = 'flex';

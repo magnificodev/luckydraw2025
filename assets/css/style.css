@@ -417,22 +417,27 @@ form#phoneForm {
 }
 
 .alert-error .alert-icon {
-    background: linear-gradient(135deg, #ff4757 0%, #ff3742 100%);
+    background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
 }
 
 .alert-error .alert-icon::before {
-    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+    background: linear-gradient(
+        45deg,
+        transparent 30%,
+        rgba(255, 255, 255, 0.1) 50%,
+        transparent 70%
+    );
 }
 
 .alert-error .alert-btn {
-    background: linear-gradient(135deg, #ff4757 0%, #ff3742 100%);
-    border: 2px solid #ff4757;
-    box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
+    background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+    border: 2px solid #4a90e2;
+    box-shadow: 0 4px 15px rgba(74, 144, 226, 0.4);
 }
 
 .alert-error .alert-btn:hover {
-    background: linear-gradient(135deg, #ff3742 0%, #ff2f3a 100%);
-    box-shadow: 0 6px 20px rgba(255, 71, 87, 0.5);
+    background: linear-gradient(135deg, #357abd 0%, #2c5aa0 100%);
+    box-shadow: 0 6px 20px rgba(74, 144, 226, 0.5);
 }
 
 /* Responsive Alert */

@@ -11,14 +11,13 @@ try {
     if (!isset($pdo)) {
         throw new Exception('Database connection not available');
     }
-    
+
     // Get total count
-    $countStmt = $pdo->prepare("
+    $countStmt = $pdo->query("
         SELECT COUNT(*) as total
         FROM export_history eh
         JOIN admin_users au ON eh.admin_user_id = au.id
     ");
-    $countStmt->execute();
     $totalRecords = $countStmt->fetch(PDO::FETCH_ASSOC)['total'];
     $totalPages = ceil($totalRecords / $limit);
 
@@ -28,9 +27,9 @@ try {
         FROM export_history eh
         JOIN admin_users au ON eh.admin_user_id = au.id
         ORDER BY eh.created_at DESC
-        LIMIT ? OFFSET ?
+        LIMIT $limit OFFSET $offset
     ");
-    $stmt->execute([$limit, $offset]);
+    $stmt->execute();
     $exportHistory = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     if (empty($exportHistory)): ?>

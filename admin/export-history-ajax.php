@@ -146,10 +146,8 @@ try {
     <?php endif;
 
 } catch(PDOException $e) {
-    error_log("Export history AJAX error: " . $e->getMessage());
     echo '<div class="no-history"><p>Lỗi khi tải lịch sử export: ' . htmlspecialchars($e->getMessage()) . '</p></div>';
 } catch(Exception $e) {
-    error_log("Export history AJAX error: " . $e->getMessage());
     echo '<div class="no-history"><p>Lỗi khi tải lịch sử export: ' . htmlspecialchars($e->getMessage()) . '</p></div>';
 }
 ?>

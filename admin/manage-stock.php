@@ -16,22 +16,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $stock = (int)$_POST['stock'];
         $isActive = (bool)$_POST['is_active'];
 
-        // Debug logging
-        error_log("Stock update request - Prize ID: $prizeId, Stock: $stock, Active: " . ($isActive ? 'true' : 'false'));
-
         try {
             $stmt = $pdo->prepare("UPDATE prizes SET stock = ?, is_active = ? WHERE id = ?");
             $result = $stmt->execute([$stock, $isActive, $prizeId]);
 
             if ($result) {
-                error_log("Stock update successful for prize ID: $prizeId");
                 echo json_encode(['success' => true, 'message' => 'Cập nhật thành công']);
             } else {
-                error_log("Stock update failed for prize ID: $prizeId");
                 echo json_encode(['success' => false, 'message' => 'Không thể cập nhật dữ liệu']);
             }
         } catch(PDOException $e) {
-            error_log("Stock update error: " . $e->getMessage());
             echo json_encode(['success' => false, 'message' => 'Lỗi database: ' . $e->getMessage()]);
         }
         exit;
@@ -94,7 +88,7 @@ try {
 
     // Calculate statistics from ALL data (not just current page)
     $statsSql = "
-        SELECT 
+        SELECT
             SUM(pr.stock) as total_stock,
             SUM(CASE WHEN pr.is_active = 1 THEN 1 ELSE 0 END) as active_count,
             SUM(CASE WHEN pr.is_active = 0 THEN 1 ELSE 0 END) as inactive_count

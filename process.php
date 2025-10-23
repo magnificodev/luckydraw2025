@@ -57,10 +57,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 // Get all wheel segments that map to available products
                 $stmt = $pdo->prepare("
-                    SELECT ws.segment_index, ws.product_id, p.name, p.stock 
-                    FROM wheel_segments ws 
-                    JOIN prizes p ON ws.product_id = p.id 
-                    WHERE p.stock > 0 AND p.is_active = TRUE 
+                    SELECT ws.segment_index, ws.product_id, p.name, p.stock
+                    FROM wheel_segments ws
+                    JOIN prizes p ON ws.product_id = p.id
+                    WHERE p.stock > 0 AND p.is_active = TRUE
                     ORDER BY ws.segment_index
                 ");
                 $stmt->execute();
@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Random select from available segments (0-11)
                 $totalSegments = 12;
                 $winningIndex = random_int(0, 11);
-                
+
                 // Find the product for this segment
                 $selectedProduct = null;
                 foreach ($availableSegments as $segment) {
@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (!$selectedProduct || $selectedProduct['stock'] <= 0) {
                     $availableSegmentIndices = array_column($availableSegments, 'segment_index');
                     $winningIndex = $availableSegmentIndices[array_rand($availableSegmentIndices)];
-                    
+
                     foreach ($availableSegments as $segment) {
                         if ($segment['segment_index'] == $winningIndex) {
                             $selectedProduct = $segment;
@@ -99,15 +99,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 }
 
-                // Debug log
-                error_log("=== BACKEND DEBUG (Virtual Segments) ===");
-                error_log("Winning Index: " . $winningIndex);
-                error_log("Product: " . $selectedProduct['name']);
-                error_log("Product ID: " . $selectedProduct['product_id']);
-                error_log("Total Segments: " . $totalSegments);
-                error_log("Degrees per segment: " . (360 / $totalSegments));
-                error_log("Available segments: " . count($availableSegments));
-                error_log("=====================================");
 
                 // Store for frontend animation and later persistence
                 $_SESSION['winning_index'] = $winningIndex;
@@ -167,15 +158,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'HTTP_FORWARDED',            // Proxy
                     'REMOTE_ADDR'               // Standard
                 ];
-                
-                // Debug: Log all available IP headers
-                error_log("IP Detection Debug:");
-                foreach ($ipKeys as $key) {
-                    if (isset($_SERVER[$key])) {
-                        error_log("$key: " . $_SERVER[$key]);
-                    }
-                }
-                
+
+
                 foreach ($ipKeys as $key) {
                     if (!empty($_SERVER[$key])) {
                         $ip = $_SERVER[$key];
@@ -185,16 +169,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                         // Validate IP (allow private ranges for testing)
                         if (filter_var($ip, FILTER_VALIDATE_IP)) {
-                            error_log("Selected IP from $key: $ip");
                             return $ip;
                         }
                     }
                 }
-                
+
                 // Fallback to REMOTE_ADDR even if it's localhost
-                $fallbackIP = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
-                error_log("Fallback IP: $fallbackIP");
-                return $fallbackIP;
+                return $_SERVER['REMOTE_ADDR'] ?? 'unknown';
             }
 
             // Insert new participant with prize and tracking info

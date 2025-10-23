@@ -17,16 +17,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
 
-    // Debug logging
-    error_log("Login attempt - Username: $username");
-    error_log("Login attempt - Password length: " . strlen($password));
-
     if (adminLogin($username, $password)) {
-        error_log("Login successful for: $username");
         header('Location: dashboard.php');
         exit();
     } else {
-        error_log("Login failed for: $username");
         $error = 'Sai tài khoản hoặc mật khẩu';
     }
 }

@@ -64,7 +64,7 @@ function exportPlayers() {
 
     // Create CSV file
     $output = fopen($filePath, 'w');
-    
+
     // Add BOM for UTF-8
     fwrite($output, "\xEF\xBB\xBF");
 
@@ -129,7 +129,7 @@ function exportPrizes() {
 
     // Create CSV file
     $output = fopen($filePath, 'w');
-    
+
     // Add BOM for UTF-8
     fwrite($output, "\xEF\xBB\xBF");
 
@@ -197,7 +197,7 @@ function exportStatistics() {
 
     // Create CSV file
     $output = fopen($filePath, 'w');
-    
+
     // Add BOM for UTF-8
     fwrite($output, "\xEF\xBB\xBF");
 
@@ -253,7 +253,7 @@ function logExportActivity($adminId, $exportType, $filename, $recordCount) {
         ]);
 
     } catch(PDOException $e) {
-        error_log("Failed to log export activity: " . $e->getMessage());
+        // Silent fail for logging
     }
 }
 ?>

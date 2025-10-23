@@ -85,14 +85,14 @@ require_once 'includes/header.php';
         <div class="card-body">
             <div class="export-history">
                 <?php
-                // Get export history
+                // Get export history (limit to 3 for display)
                 try {
                     $stmt = $pdo->prepare("
                         SELECT eh.*, au.username
                         FROM export_history eh
                         JOIN admin_users au ON eh.admin_user_id = au.id
                         ORDER BY eh.created_at DESC
-                        LIMIT 20
+                        LIMIT 3
                     ");
                     $stmt->execute();
                     $exportHistory = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -132,11 +132,39 @@ require_once 'includes/header.php';
                             </div>
                         </div>
                         <?php endforeach; ?>
+                        
+                        <!-- View All Button -->
+                        <div class="view-all-section" style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e9ecef;">
+                            <button class="btn btn-primary" onclick="openExportHistoryModal()">
+                                <i class="fas fa-list"></i>
+                                Xem tất cả
+                            </button>
+                        </div>
                     <?php endif;
                 } catch(PDOException $e) {
                     echo '<div class="no-history"><p>Lỗi khi tải lịch sử export</p></div>';
                 }
                 ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Export History Modal -->
+<div id="exportHistoryModal" class="modal" style="display: none;">
+    <div class="modal-content" style="max-width: 800px; width: 90%;">
+        <div class="modal-header">
+            <h3>
+                <i class="fas fa-history"></i>
+                Lịch sử Export đầy đủ
+            </h3>
+            <button class="modal-close" onclick="closeExportHistoryModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div id="exportHistoryContent">
+                <!-- Content will be loaded here -->
             </div>
         </div>
     </div>
@@ -291,6 +319,135 @@ require_once 'includes/header.php';
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+/* Modal Styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    max-height: 80vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header {
+    padding: 20px;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f8f9fa;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+    background: #e9ecef;
+    color: #2c3e50;
+}
+
+.modal-body {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+/* Pagination in Modal */
+.modal-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px 0;
+    border-top: 1px solid #e9ecef;
+    background-color: #f8f9fa;
+    margin: 0 -20px -20px -20px;
+}
+
+.modal-pagination-links {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.modal-pagination-links .btn {
+    min-width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: 1px solid #dee2e6;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    user-select: none;
+}
+
+.modal-pagination-links .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    cursor: pointer;
+}
+
+.modal-pagination-links .btn-primary {
+    background-color: #02d15e;
+    border-color: #02d15e;
+    color: white;
+    cursor: pointer;
+}
+
+.modal-pagination-links .btn-primary:hover {
+    background-color: #01b84d;
+    border-color: #01b84d;
+    cursor: pointer;
+}
+
+.modal-pagination-links .btn-secondary {
+    background-color: white;
+    border-color: #dee2e6;
+    color: #6c757d;
+    cursor: pointer;
+}
+
+.modal-pagination-links .btn-secondary:hover {
+    background-color: #f8f9fa;
+    border-color: #02d15e;
+    color: #02d15e;
+    cursor: pointer;
+}
+
 @media (max-width: 768px) {
     .export-options {
         grid-template-columns: 1fr;
@@ -339,6 +496,37 @@ function downloadExport(filename) {
     link.click();
     document.body.removeChild(link);
 }
+
+function openExportHistoryModal() {
+    document.getElementById('exportHistoryModal').style.display = 'flex';
+    loadExportHistory(1);
+}
+
+function closeExportHistoryModal() {
+    document.getElementById('exportHistoryModal').style.display = 'none';
+}
+
+function loadExportHistory(page = 1) {
+    const content = document.getElementById('exportHistoryContent');
+    content.innerHTML = '<div style="text-align: center; padding: 20px;"><i class="fas fa-spinner fa-spin"></i> Đang tải...</div>';
+    
+    fetch(`export-history-ajax.php?page=${page}`)
+        .then(response => response.text())
+        .then(data => {
+            content.innerHTML = data;
+        })
+        .catch(error => {
+            content.innerHTML = '<div style="text-align: center; padding: 20px; color: #dc3545;"><i class="fas fa-exclamation-triangle"></i> Lỗi khi tải dữ liệu</div>';
+        });
+}
+
+// Close modal when clicking outside
+document.addEventListener('click', function(event) {
+    const modal = document.getElementById('exportHistoryModal');
+    if (event.target === modal) {
+        closeExportHistoryModal();
+    }
+});
 </script>
 
 <?php require_once 'includes/footer.php'; ?>

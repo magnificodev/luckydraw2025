@@ -243,6 +243,10 @@ try {
                    class="btn btn-sm btn-secondary" title="Trang đầu">
                     <i class="fas fa-angle-double-left"></i>
                 </a>
+            <?php else: ?>
+                <span class="btn btn-sm btn-disabled" title="Trang đầu">
+                    <i class="fas fa-angle-double-left"></i>
+                </span>
             <?php endif; ?>
 
             <!-- Previous page -->
@@ -251,6 +255,10 @@ try {
                    class="btn btn-sm btn-secondary" title="Trang trước">
                     <i class="fas fa-chevron-left"></i>
                 </a>
+            <?php else: ?>
+                <span class="btn btn-sm btn-disabled" title="Trang trước">
+                    <i class="fas fa-chevron-left"></i>
+                </span>
             <?php endif; ?>
 
             <!-- Page numbers -->
@@ -268,6 +276,10 @@ try {
                    class="btn btn-sm btn-secondary" title="Trang sau">
                     <i class="fas fa-chevron-right"></i>
                 </a>
+            <?php else: ?>
+                <span class="btn btn-sm btn-disabled" title="Trang sau">
+                    <i class="fas fa-chevron-right"></i>
+                </span>
             <?php endif; ?>
 
             <!-- Last page -->
@@ -276,6 +288,10 @@ try {
                    class="btn btn-sm btn-secondary" title="Trang cuối">
                     <i class="fas fa-angle-double-right"></i>
                 </a>
+            <?php else: ?>
+                <span class="btn btn-sm btn-disabled" title="Trang cuối">
+                    <i class="fas fa-angle-double-right"></i>
+                </span>
             <?php endif; ?>
         </div>
     </div>
@@ -465,6 +481,23 @@ select.form-control {
     border-color: #02d15e;
     color: #02d15e;
     cursor: pointer;
+}
+
+.pagination-links .btn-disabled {
+    background-color: #f8f9fa;
+    border-color: #e9ecef;
+    color: #adb5bd;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.pagination-links .btn-disabled:hover {
+    background-color: #f8f9fa;
+    border-color: #e9ecef;
+    color: #adb5bd;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
 @media (max-width: 768px) {

@@ -184,17 +184,10 @@ form#phoneForm {
 
 .wheel {
     width: 100%;
-    height: 100%;
-    transition: transform 4s cubic-bezier(0.25, 0.1, 0.25, 1);
-    border-radius: 50%;
     box-shadow: 0 0 20px rgba(0, 255, 136, 0.6), 0 0 40px rgba(0, 255, 136, 0.4),
         0 0 60px rgba(0, 255, 136, 0.2);
-}
-
-.wheel img {
-    width: 100%;
-    height: 100%;
     border-radius: 50%;
+    transition: transform 4s ease-out;
 }
 
 .wheel-pointer {
@@ -225,19 +218,20 @@ form#phoneForm {
     justify-content: center;
 }
 
-.prize-image-container {
-    width: 160px;
-    height: 160px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 15px;
+.prize-text-container {
+    text-align: center;
+    padding: 20px;
 }
 
-.prize-image {
-    max-width: 120px;
-    max-height: 120px;
-    object-fit: contain;
+.prize-name {
+    color: #fff;
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    background: linear-gradient(#02d15e 0%, #0b66cf 50%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-stroke: 4px transparent;
 }
 
 /* Loading Overlay */

@@ -1,15 +1,21 @@
 // Lucky Draw Wheel App - Main JavaScript Logic (PHP Version)
 
 // Constants and Configuration
+// Note: Prize selection is now handled by backend, this array is kept for reference
+// Order matches the actual wheel layout (clockwise from top)
 const PRIZES = [
-    { name: 'Bình thủy tinh', image: 'binh-thuy-tinh.png', angle: 0 },
-    { name: 'Bịt mắt ngủ', image: 'bit-mat-ngu.png', angle: 45 },
-    { name: 'Móc khóa', image: 'moc-khoa.png', angle: 90 },
-    { name: 'Mũ bảo hiểm', image: 'mu-bao-hiem.png', angle: 135 },
-    { name: 'Ô gấp', image: 'o-gap.png', angle: 180 },
-    { name: 'Tag hành lý', image: 'tag-hanh-ly.png', angle: 225 },
-    { name: 'Tai nghe Bluetooth', image: 'tai-nghe.png', angle: 270 },
-    { name: 'Túi tote', image: 'tui-tote.png', angle: 315 },
+    { name: 'Tai nghe Bluetooth', image: 'tai-nghe.png' }, // Index 0
+    { name: 'Bình thủy tinh', image: 'binh-thuy-tinh.png' }, // Index 1
+    { name: 'Tag hành lý', image: 'tag-hanh-ly.png' }, // Index 2
+    { name: 'Móc khóa', image: 'moc-khoa.png' }, // Index 3
+    { name: 'Túi tote', image: 'tui-tote.png' }, // Index 4
+    { name: 'Bình thủy tinh', image: 'binh-thuy-tinh.png' }, // Index 5
+    { name: 'Móc khóa', image: 'moc-khoa.png' }, // Index 6
+    { name: 'Bịt mắt ngủ', image: 'bit-mat-ngu.png' }, // Index 7
+    { name: 'Tag hành lý', image: 'tag-hanh-ly.png' }, // Index 8
+    { name: 'Túi tote', image: 'tui-tote.png' }, // Index 9
+    { name: 'Ô gấp', image: 'o-gap.png' }, // Index 10
+    { name: 'Mũ bảo hiểm', image: 'mu-bao-hiem.png' }, // Index 11
 ];
 
 // DOM Elements
@@ -17,7 +23,9 @@ const phoneInput = document.getElementById('phoneInput');
 const phoneError = document.getElementById('phoneError');
 const phoneForm = document.getElementById('phoneForm');
 const spinForm = document.getElementById('spinForm');
+// Support both legacy structure (#wheel > img) and new <img class="wheel">
 const wheel = document.getElementById('wheel');
+const wheelImage = document.querySelector('.wheel') || (wheel ? wheel.querySelector('img') : null);
 const loadingOverlay = document.getElementById('loadingOverlay');
 
 // State Management
@@ -136,22 +144,38 @@ function handleSpinSubmit(e) {
 
 // Wheel Animation for Screen 2
 function animateWheelSpin() {
-    if (!wheel) return;
+    // Prefer rotating the image itself for visible spin
+    const targetEl = wheelImage || wheel;
+    if (!targetEl) return;
 
-    // Select a random prize
-    const selectedPrize = PRIZES[Math.floor(Math.random() * PRIZES.length)];
+    // Use the winning index from PHP (passed from server)
+    if (window.winningIndex === undefined) {
+        console.error('No winning index found from server');
+        return;
+    }
 
-    // Calculate angle to center the pointer on the selected prize
-    // Each segment is 45 degrees (360/8), so center is at angle + 22.5 degrees
-    // We need to rotate the wheel in the opposite direction to center the pointer
-    const segmentCenter = selectedPrize.angle + 22.5;
-    const targetAngle = 360 - segmentCenter;
+    const winningIndex = window.winningIndex;
+    const totalSegments = window.totalSegments ?? 12; // Support 12 segments
+    const degPer = 360 / totalSegments; // Degrees per segment (30°)
 
-    // Add multiple full rotations for visual effect (5-8 full rotations)
-    const fullRotations = 5 + Math.random() * 3;
-    const finalAngle = targetAngle + fullRotations * 360;
+    // Simple calculation: winningIndex * degPer + spins * 360
+    // Example: winningIndex = 5, spins = 3 → 5 * 30 + 3 * 360 = 150 + 1080 = 1230°
+    const spins = Math.floor(3 + Math.random() * 4); // integer 3..6 full rotations
+    const finalAngle = winningIndex * degPer + spins * 360;
 
-    wheel.style.transform = `rotate(${finalAngle}deg)`;
+    // Debug logs
+    console.log('=== WHEEL SPIN DEBUG ===');
+    console.log('Winning Index:', winningIndex);
+    console.log('Prize:', PRIZES[winningIndex]?.name || 'Unknown');
+    console.log('Total Segments:', totalSegments);
+    console.log('Degrees per segment:', degPer);
+    console.log('Random spins (integer):', spins);
+    console.log('Base angle (winningIndex * degPer):', winningIndex * degPer);
+    console.log('Spins angle (spins * 360):', (spins * 360).toFixed(2));
+    console.log('Final angle:', finalAngle.toFixed(2));
+    console.log('========================');
+
+    targetEl.style.transform = `rotate(${finalAngle}deg)`;
 }
 
 // Auto spin on screen 2 removed; wheel spins only on button press

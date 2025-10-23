@@ -16,6 +16,20 @@ if (!isset($_SESSION['is_spinning'])) {
 // Get current screen from URL parameter or default to 1
 $screen = isset($_GET['screen']) ? (int)$_GET['screen'] : 1;
 $screen = in_array($screen, [1, 2, 3]) ? $screen : 1;
+
+// Security check: Only allow access to screen 2 and 3 if phone number is validated
+if (($screen == 2 || $screen == 3) && empty($_SESSION['current_phone'])) {
+    // No valid phone number, redirect to screen 1
+    header('Location: index.php?screen=1');
+    exit();
+}
+
+// Additional check for screen 2: Must have winning index
+if ($screen == 2 && !isset($_SESSION['winning_index'])) {
+    // No winning index, redirect to screen 1
+    header('Location: index.php?screen=1');
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -68,9 +82,7 @@ $screen = in_array($screen, [1, 2, 3]) ? $screen : 1;
                         alt="Pointer"
                         class="wheel-pointer"
                     />
-                    <div id="wheel" class="wheel">
-                        <img src="assets/images/wheel.png" alt="Wheel" />
-                    </div>
+                    <img class="wheel" src="assets/images/wheel.png" alt="Wheel" />
                 </div>
 
                 <div class="spin-button-section">
@@ -89,13 +101,10 @@ $screen = in_array($screen, [1, 2, 3]) ? $screen : 1;
         <!-- Screen 3: Prize Display -->
         <div id="screen3" class="screen active">
             <div class="prize-section">
-                <div class="prize-image-container">
-                    <img
-                        id="prizeImage"
-                        src="assets/images/gifts/<?php echo htmlspecialchars($_SESSION['current_prize']['image'] ?? ''); ?>"
-                        alt="Phần quà"
-                        class="prize-image"
-                    />
+                <div class="prize-text-container">
+                    <h2 id="prizeName" class="prize-name">
+                        <?php echo htmlspecialchars($_SESSION['current_prize']['name'] ?? ''); ?>
+                    </h2>
                 </div>
             </div>
         </div>
@@ -107,6 +116,13 @@ $screen = in_array($screen, [1, 2, 3]) ? $screen : 1;
         <p>Đang xử lý...</p>
     </div>
 
+    <script>
+        // Pass winning index and total segments from PHP to JavaScript
+        <?php if (isset($_SESSION['winning_index'])): ?>
+        window.winningIndex = <?php echo (int)$_SESSION['winning_index']; ?>;
+        window.totalSegments = <?php echo isset($_SESSION['total_segments']) ? (int)$_SESSION['total_segments'] : 12; ?>;
+        <?php endif; ?>
+    </script>
     <script src="assets/js/main.js"></script>
 </body>
 </html>

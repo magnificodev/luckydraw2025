@@ -91,25 +91,33 @@ try {
     </div>
 
     <!-- Search and Filter -->
-    <form method="GET" class="search-filter">
-        <div class="search-box">
-            <div class="search-input-wrapper">
+    <div class="search-filter">
+        <form method="GET" class="filter-form">
+            <div class="search-box">
                 <input type="text" name="search" class="form-control search-input" placeholder="Tìm kiếm quà tặng..."
-                       value="<?php echo htmlspecialchars($search); ?>"
-                       onkeyup="if(event.key==='Enter') this.form.submit()">
-                <button type="submit" class="search-btn" title="Tìm kiếm">
-                    <i class="fas fa-search"></i>
-                </button>
+                       value="<?php echo htmlspecialchars($search); ?>">
             </div>
-        </div>
-        <div class="filter-group">
-            <select name="status" class="form-control" onchange="this.form.submit()">
-                <option value="all" <?php echo $status === 'all' ? 'selected' : ''; ?>>Tất cả</option>
-                <option value="active" <?php echo $status === 'active' ? 'selected' : ''; ?>>Hoạt động</option>
-                <option value="inactive" <?php echo $status === 'inactive' ? 'selected' : ''; ?>>Tạm dừng</option>
-            </select>
-        </div>
-    </form>
+
+            <div class="filter-group">
+                <select name="status" class="form-control">
+                    <option value="all" <?php echo $status === 'all' ? 'selected' : ''; ?>>Tất cả</option>
+                    <option value="active" <?php echo $status === 'active' ? 'selected' : ''; ?>>Hoạt động</option>
+                    <option value="inactive" <?php echo $status === 'inactive' ? 'selected' : ''; ?>>Tạm dừng</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i>
+                    Tìm kiếm
+                </button>
+                <a href="manage-stock.php" class="btn btn-secondary">
+                    <i class="fas fa-times"></i>
+                    Xóa bộ lọc
+                </a>
+            </div>
+        </form>
+    </div>
 
     <!-- Prizes Table -->
     <div class="table-container">
@@ -269,14 +277,10 @@ input:checked + .slider:before {
 
 /* Search and Filter Form */
 .search-filter {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-    align-items: center;
+    width: 100%;
 }
 
-.search-filter form {
+.filter-form {
     display: flex;
     gap: 15px;
     flex-wrap: wrap;
@@ -284,49 +288,24 @@ input:checked + .slider:before {
     width: 100%;
 }
 
-/* Search input with icon */
-.search-input-wrapper {
-    position: relative;
+.filter-form .search-box {
     flex: 1;
     min-width: 200px;
 }
 
-.search-input {
-    padding-right: 45px !important;
-    width: 100% !important;
+.filter-form .filter-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
 }
 
-.search-btn {
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: #02d15e;
-    border: none;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    padding: 8px;
-    width: 36px;
-    height: 36px;
-    border-radius: 6px;
-    transition: all 0.3s ease;
-    z-index: 10;
+.filter-group .btn {
+    height: 44px;
+    padding: 0 15px;
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.search-btn:hover {
-    background-color: #01b84d;
-    transform: translateY(-50%) translateY(-1px);
-    box-shadow: 0 2px 4px rgba(2, 209, 94, 0.3);
-}
-
-.search-btn:active {
-    background-color: #02b84a;
-    transform: translateY(-50%) translateY(0);
-    box-shadow: 0 1px 2px rgba(2, 209, 94, 0.3);
+    gap: 5px;
 }
 
 /* Fix filter dropdown arrow spacing and remove default arrow */
@@ -339,6 +318,17 @@ select.form-control {
     background-position: right 12px center !important;
     background-repeat: no-repeat !important;
     background-size: 16px !important;
+}
+
+@media (max-width: 768px) {
+    .filter-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-form .search-box {
+        min-width: auto;
+    }
 }
 
 /* Make distributed count badge larger and more visible */

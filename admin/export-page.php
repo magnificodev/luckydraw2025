@@ -381,6 +381,11 @@ require_once 'includes/header.php';
     justify-content: center;
 }
 
+/* Specific styling for export history modal close button */
+#exportHistoryModal .modal-header i {
+    color: #02d15e !important;
+}
+
 .modal-close:hover {
     background: #e9ecef;
     color: #02d15e;

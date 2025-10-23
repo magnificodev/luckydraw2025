@@ -392,13 +392,13 @@ require_once 'includes/header.php';
     border: 1px solid #dee2e6 !important;
     cursor: not-allowed !important;
     opacity: 0.6 !important;
-    pointer-events: none !important;
 }
 
 .modal-pagination-links .btn-disabled:hover {
     background: #f8f9fa !important;
     color: #6c757d !important;
     border: 1px solid #dee2e6 !important;
+    cursor: not-allowed !important;
     transform: none !important;
     box-shadow: none !important;
 }
@@ -409,7 +409,13 @@ require_once 'includes/header.php';
     border: 1px solid #dee2e6 !important;
     cursor: not-allowed !important;
     opacity: 0.6 !important;
-    pointer-events: none !important;
+}
+
+.modal-pagination-links span.btn-disabled:hover {
+    background: #f8f9fa !important;
+    color: #6c757d !important;
+    border: 1px solid #dee2e6 !important;
+    cursor: not-allowed !important;
 }
 
 

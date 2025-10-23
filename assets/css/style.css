@@ -50,8 +50,9 @@ body {
 #screen1 .background-overlay {
     background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #4caf50 100%);
     background-image: url('../images/background-1.png');
-    background-size: cover;
+    background-size: contain;
     background-position: center;
+    background-repeat: no-repeat;
     position: absolute;
     top: 0;
     left: 0;
@@ -63,8 +64,9 @@ body {
 #screen2 .background-overlay {
     background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #4caf50 100%);
     background-image: url('../images/background-2.png');
-    background-size: cover;
+    background-size: contain;
     background-position: center;
+    background-repeat: no-repeat;
     position: absolute;
     top: 0;
     left: 0;
@@ -76,8 +78,9 @@ body {
 #screen3 .background-overlay {
     background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #4caf50 100%);
     background-image: url('../images/background-3.png');
-    background-size: cover;
+    background-size: contain;
     background-position: center;
+    background-repeat: no-repeat;
     position: absolute;
     top: 0;
     left: 0;

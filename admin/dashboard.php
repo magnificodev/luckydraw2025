@@ -196,8 +196,8 @@ try {
 }
 
 .status-badge {
-    min-width: 80px !important;
-    width: 80px !important;
+    min-width: 100px !important;
+    width: 100px !important;
     text-align: center !important;
     display: inline-block !important;
     padding: 4px 8px !important;
@@ -207,6 +207,7 @@ try {
     height: auto !important;
     line-height: 1.2 !important;
     box-sizing: border-box !important;
+    white-space: nowrap !important;
 }
 </style>
 

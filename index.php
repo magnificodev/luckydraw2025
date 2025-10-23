@@ -33,15 +33,17 @@ $screen = in_array($screen, [1, 2, 3]) ? $screen : 1;
                 <!-- Form Section Only -->
                 <div class="form-section">
                     <form id="phoneForm" method="POST" action="process.php">
-                        <input
-                            type="tel"
-                            id="phoneInput"
-                            name="phone"
-                            placeholder="Nhập số điện thoại của bạn"
-                            maxlength="11"
-                            value="<?php echo htmlspecialchars($_SESSION['current_phone']); ?>"
-                            required
-                        />
+                        <div class="input-wrapper">
+                            <input
+                                type="tel"
+                                id="phoneInput"
+                                name="phone"
+                                placeholder="Nhập số điện thoại của bạn"
+                                maxlength="11"
+                                value="<?php echo htmlspecialchars($_SESSION['current_phone']); ?>"
+                                required
+                            />
+                        </div>
                         <div id="phoneError" class="error-message">
                             <?php
                             if (isset($_SESSION['error'])) {

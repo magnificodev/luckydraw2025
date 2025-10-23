@@ -281,6 +281,16 @@ require_once 'includes/header.php';
     gap: 10px;
 }
 
+.history-actions .btn {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.history-actions .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
 @media (max-width: 768px) {
     .export-options {
         grid-template-columns: 1fr;

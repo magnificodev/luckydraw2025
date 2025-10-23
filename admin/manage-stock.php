@@ -265,10 +265,13 @@ input:checked + .slider:before {
 }
 
 /* Refresh button styling to match form controls height */
-.refresh-btn {
+button.refresh-btn.btn.btn-primary {
     height: 44px !important;
     width: 44px !important;
     padding: 0 !important;
+    gap: 0 !important;
+    min-width: 44px !important;
+    max-width: 44px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -277,23 +280,25 @@ input:checked + .slider:before {
     background-color: #02d15e !important;
     color: white !important;
     transition: all 0.3s ease !important;
+    flex-shrink: 0 !important;
 }
 
-.refresh-btn:hover {
+button.refresh-btn.btn.btn-primary:hover {
     background-color: #01b84d !important;
     border-color: #02d15e !important;
     transform: translateY(-1px) !important;
     box-shadow: 0 0 0 3px rgba(2, 209, 94, 0.1) !important;
 }
 
-.refresh-btn:active {
+button.refresh-btn.btn.btn-primary:active {
     transform: translateY(0) !important;
     box-shadow: 0 1px 2px rgba(2, 209, 94, 0.3) !important;
 }
 
-.refresh-btn i {
+button.refresh-btn.btn.btn-primary i {
     font-size: 16px !important;
     margin: 0 !important;
+    padding: 0 !important;
 }
 </style>
 

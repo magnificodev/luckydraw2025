@@ -7,6 +7,11 @@ $limit = 10; // 10 items per page
 $offset = ($page - 1) * $limit;
 
 try {
+    // Debug: Check if PDO is available
+    if (!isset($pdo)) {
+        throw new Exception('Database connection not available');
+    }
+    
     // Get total count
     $countStmt = $pdo->prepare("
         SELECT COUNT(*) as total
@@ -94,7 +99,7 @@ try {
 
                 <!-- Page numbers -->
                 <?php for ($i = max(1, $page - 2); $i <= min($totalPages, $page + 2); $i++): ?>
-                    <button class="btn btn-sm <?php echo $i == $page ? 'btn-primary' : 'btn-secondary'; ?>" 
+                    <button class="btn btn-sm <?php echo $i == $page ? 'btn-primary' : 'btn-secondary'; ?>"
                             onclick="loadExportHistory(<?php echo $i; ?>)" title="Trang <?php echo $i; ?>">
                         <?php echo $i; ?>
                     </button>
@@ -127,6 +132,10 @@ try {
     <?php endif;
 
 } catch(PDOException $e) {
-    echo '<div class="no-history"><p>Lỗi khi tải lịch sử export</p></div>';
+    error_log("Export history AJAX error: " . $e->getMessage());
+    echo '<div class="no-history"><p>Lỗi khi tải lịch sử export: ' . htmlspecialchars($e->getMessage()) . '</p></div>';
+} catch(Exception $e) {
+    error_log("Export history AJAX error: " . $e->getMessage());
+    echo '<div class="no-history"><p>Lỗi khi tải lịch sử export: ' . htmlspecialchars($e->getMessage()) . '</p></div>';
 }
 ?>

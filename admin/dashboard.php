@@ -197,12 +197,16 @@ try {
 
 .status-badge {
     min-width: 80px !important;
+    width: 80px !important;
     text-align: center !important;
     display: inline-block !important;
-    padding: 6px 12px !important;
-    font-size: 0.8rem !important;
+    padding: 4px 8px !important;
+    font-size: 0.75rem !important;
     font-weight: 600 !important;
-    border-radius: 4px !important;
+    border-radius: 3px !important;
+    height: auto !important;
+    line-height: 1.2 !important;
+    box-sizing: border-box !important;
 }
 </style>
 

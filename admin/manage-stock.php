@@ -384,19 +384,63 @@ select.form-control {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 20px;
-    padding: 20px 0;
+    padding: 15px 0;
+    border-top: 1px solid #e9ecef;
+    background-color: #f8f9fa;
+    margin-top: 0;
 }
 
 .pagination-links {
     display: flex;
-    gap: 5px;
+    gap: 8px;
+    align-items: center;
+}
+
+.pagination-links .btn {
+    min-width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: 1px solid #dee2e6;
+}
+
+.pagination-links .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.pagination-links .btn-primary {
+    background-color: #02d15e;
+    border-color: #02d15e;
+    color: white;
+}
+
+.pagination-links .btn-secondary {
+    background-color: white;
+    border-color: #dee2e6;
+    color: #6c757d;
+}
+
+.pagination-links .btn-secondary:hover {
+    background-color: #f8f9fa;
+    border-color: #02d15e;
+    color: #02d15e;
 }
 
 @media (max-width: 768px) {
     .pagination {
-        flex-direction: column;
-        gap: 15px;
+        padding: 12px 0;
+    }
+    
+    .pagination-links {
+        gap: 6px;
+    }
+    
+    .pagination-links .btn {
+        min-width: 36px;
+        height: 36px;
+        font-size: 0.9rem;
     }
 }
 

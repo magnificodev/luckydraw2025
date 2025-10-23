@@ -19,13 +19,13 @@ try {
     $stmt = $pdo->query("SELECT COUNT(*) as total FROM participants WHERE DATE(created_at) = CURDATE()");
     $todaySpins = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
 
-    // Recent players (last 10)
+    // Recent players (last 8)
     $stmt = $pdo->query("
         SELECT p.phone_number, pr.name as prize_name, p.created_at
         FROM participants p
         JOIN prizes pr ON p.prize_id = pr.id
         ORDER BY p.created_at DESC
-        LIMIT 10
+        LIMIT 8
     ");
     $recentPlayers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

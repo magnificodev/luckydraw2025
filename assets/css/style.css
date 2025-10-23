@@ -29,6 +29,9 @@ body {
     justify-content: center;
     margin: 0 auto;
     background: #000;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
     overflow: hidden;
 }
 
@@ -46,47 +49,17 @@ body {
     }
 }
 
-/* Background Overlays */
-#screen1 .background-overlay {
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #4caf50 100%);
+/* Screen Background Images */
+#screen1 {
     background-image: url('../images/background-1.png');
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
 }
 
-#screen2 .background-overlay {
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #4caf50 100%);
+#screen2 {
     background-image: url('../images/background-2.png');
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
 }
 
-#screen3 .background-overlay {
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #4caf50 100%);
+#screen3 {
     background-image: url('../images/background-3.png');
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
 }
 
 /* Content Container - Mobile Optimized */

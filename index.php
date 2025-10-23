@@ -29,7 +29,6 @@ $screen = in_array($screen, [1, 2, 3]) ? $screen : 1;
     <?php if ($screen == 1): ?>
         <!-- Screen 1: Phone Number Input -->
         <div id="screen1" class="screen active">
-            <div class="background-overlay"></div>
             <div class="content">
                 <!-- VPBank Logo and Solution Day -->
                 <div class="header">
@@ -78,7 +77,6 @@ $screen = in_array($screen, [1, 2, 3]) ? $screen : 1;
     <?php elseif ($screen == 2): ?>
         <!-- Screen 2: Spin Wheel -->
         <div id="screen2" class="screen active">
-            <div class="background-overlay"></div>
             <div class="content">
                 <!-- VPBank Logo and Solution Day -->
                 <div class="header">
@@ -118,7 +116,6 @@ $screen = in_array($screen, [1, 2, 3]) ? $screen : 1;
     <?php elseif ($screen == 3): ?>
         <!-- Screen 3: Prize Display -->
         <div id="screen3" class="screen active">
-            <div class="background-overlay"></div>
             <div class="content">
                 <!-- VPBank Logo and Solution Day -->
                 <div class="header">

@@ -38,42 +38,42 @@ try {
 
 function exportPlayers() {
     global $pdo, $admin;
-    
+
     $sql = "
-        SELECT p.phone_number, pr.name as prize_name, p.created_at, 
+        SELECT p.phone_number, pr.name as prize_name, p.created_at,
                p.ip_address, p.user_agent, p.winning_index
-        FROM participants p 
-        JOIN prizes pr ON p.prize_id = pr.id 
+        FROM participants p
+        JOIN prizes pr ON p.prize_id = pr.id
         ORDER BY p.created_at DESC
     ";
-    
+
     $stmt = $pdo->query($sql);
     $players = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $recordCount = count($players);
-    
+
     $filename = 'nguoi_choi_' . date('Y-m-d_H-i-s') . '.csv';
-    
+
     // Log export activity
     logExportActivity($admin['id'], 'players', $filename, $recordCount);
-    
+
     header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: attachment; filename="' . $filename . '"');
-    
+
     // Add BOM for UTF-8
     echo "\xEF\xBB\xBF";
-    
+
     $output = fopen('php://output', 'w');
-    
+
     // CSV Headers
     fputcsv($output, [
         'Số điện thoại',
-        'Quà tặng', 
+        'Quà tặng',
         'Thời gian quay',
         'IP Address',
         'User Agent',
         'Winning Index'
     ]);
-    
+
     // CSV Data
     foreach ($players as $player) {
         fputcsv($output, [
@@ -85,7 +85,7 @@ function exportPlayers() {
             $player['winning_index']
         ]);
     }
-    
+
     fclose($output);
     exit();
 }
@@ -194,26 +194,26 @@ function exportStatistics() {
 // Helper function to log export activity
 function logExportActivity($adminId, $exportType, $filename, $recordCount) {
     global $pdo;
-    
+
     try {
         $stmt = $pdo->prepare("
-            INSERT INTO export_history (admin_user_id, export_type, filename, record_count, created_at) 
+            INSERT INTO export_history (admin_user_id, export_type, filename, record_count, created_at)
             VALUES (?, ?, ?, ?, NOW())
         ");
         $stmt->execute([$adminId, $exportType, $filename, $recordCount]);
-        
+
         // Also log admin activity
         $stmt = $pdo->prepare("
-            INSERT INTO admin_activity_log (admin_user_id, action, description, ip_address, user_agent, created_at) 
+            INSERT INTO admin_activity_log (admin_user_id, action, description, ip_address, user_agent, created_at)
             VALUES (?, 'export', ?, ?, ?, NOW())
         ");
         $stmt->execute([
-            $adminId, 
+            $adminId,
             "Exported $exportType data: $filename ($recordCount records)",
             $_SERVER['REMOTE_ADDR'] ?? null,
             $_SERVER['HTTP_USER_AGENT'] ?? null
         ]);
-        
+
     } catch(PDOException $e) {
         error_log("Failed to log export activity: " . $e->getMessage());
     }

@@ -88,15 +88,15 @@ require_once 'includes/header.php';
                 // Get export history
                 try {
                     $stmt = $pdo->prepare("
-                        SELECT eh.*, au.username 
-                        FROM export_history eh 
-                        JOIN admin_users au ON eh.admin_user_id = au.id 
-                        ORDER BY eh.created_at DESC 
+                        SELECT eh.*, au.username
+                        FROM export_history eh
+                        JOIN admin_users au ON eh.admin_user_id = au.id
+                        ORDER BY eh.created_at DESC
                         LIMIT 20
                     ");
                     $stmt->execute();
                     $exportHistory = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                    
+
                     if (empty($exportHistory)): ?>
                         <div class="no-history">
                             <i class="fas fa-inbox" style="font-size: 3rem; color: #6c757d; margin-bottom: 15px; display: block;"></i>
@@ -111,15 +111,15 @@ require_once 'includes/header.php';
                                 <div>
                                     <strong><?php echo htmlspecialchars($export['filename']); ?></strong>
                                     <small>
-                                        <?php 
+                                        <?php
                                         $typeNames = [
                                             'players' => 'Danh sách người chơi',
-                                            'prizes' => 'Thống kê quà tặng', 
+                                            'prizes' => 'Thống kê quà tặng',
                                             'statistics' => 'Thống kê hàng ngày'
                                         ];
                                         echo $typeNames[$export['export_type']] ?? $export['export_type'];
-                                        ?> - 
-                                        <?php echo date('d/m/Y H:i', strtotime($export['created_at'])); ?> - 
+                                        ?> -
+                                        <?php echo date('d/m/Y H:i', strtotime($export['created_at'])); ?> -
                                         <?php echo number_format($export['record_count']); ?> bản ghi
                                     </small>
                                 </div>

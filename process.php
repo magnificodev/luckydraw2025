@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 // Map winning index to an actual prize entry
                 $selectedPrize = $prizes[$winningIndex];
-                
+
                 // Debug log
                 error_log("=== BACKEND DEBUG ===");
                 error_log("Winning Index: " . $winningIndex);
@@ -112,9 +112,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit();
             }
 
-            // Insert new participant with prize
-            $stmt = $pdo->prepare("INSERT INTO participants (phone_number, prize_name, winning_index) VALUES (?, ?, ?)");
-            $stmt->execute([$phone, $selectedPrize, $_SESSION['winning_index']]);
+            // Insert new participant with prize and tracking info
+            $stmt = $pdo->prepare("INSERT INTO participants (phone_number, prize_name, winning_index, ip_address, user_agent, session_id) VALUES (?, ?, ?, ?, ?, ?)");
+            $stmt->execute([
+                $phone, 
+                $selectedPrize, 
+                $_SESSION['winning_index'],
+                $_SERVER['REMOTE_ADDR'] ?? null,
+                $_SERVER['HTTP_USER_AGENT'] ?? null,
+                session_id()
+            ]);
+
+            // Update prize statistics
+            $stmt = $pdo->prepare("INSERT INTO prize_statistics (prize_name, winning_index, count, last_won_at) VALUES (?, ?, 1, NOW()) ON DUPLICATE KEY UPDATE count = count + 1, last_won_at = NOW()");
+            $stmt->execute([$selectedPrize, $_SESSION['winning_index']]);
 
             // Set prize in session
             $_SESSION['current_prize'] = ['name' => $selectedPrize];

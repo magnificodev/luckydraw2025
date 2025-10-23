@@ -90,6 +90,40 @@ try {
         </h2>
     </div>
 
+    <!-- Summary Statistics -->
+    <div class="row" style="margin-bottom: 20px;">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body" style="text-align: center;">
+                    <h4 style="color: #02d15e; margin-bottom: 5px;">
+                        <?php echo number_format(array_sum(array_column($prizes, 'stock'))); ?>
+                    </h4>
+                    <p style="color: #6c757d; margin: 0;">Tổng stock</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body" style="text-align: center;">
+                    <h4 style="color: #17a2b8; margin-bottom: 5px;">
+                        <?php echo count(array_filter($prizes, function($p) { return $p['is_active']; })); ?>
+                    </h4>
+                    <p style="color: #6c757d; margin: 0;">Đang hoạt động</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body" style="text-align: center;">
+                    <h4 style="color: #dc3545; margin-bottom: 5px;">
+                        <?php echo count(array_filter($prizes, function($p) { return !$p['is_active']; })); ?>
+                    </h4>
+                    <p style="color: #6c757d; margin: 0;">Tạm dừng</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Search and Filter -->
     <div class="search-filter">
         <form method="GET" class="filter-form">
@@ -179,40 +213,6 @@ try {
                 <?php endif; ?>
             </tbody>
         </table>
-    </div>
-
-    <!-- Summary -->
-    <div class="row" style="margin-top: 20px;">
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body" style="text-align: center;">
-                    <h4 style="color: #02d15e; margin-bottom: 5px;">
-                        <?php echo number_format(array_sum(array_column($prizes, 'stock'))); ?>
-                    </h4>
-                    <p style="color: #6c757d; margin: 0;">Tổng stock</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body" style="text-align: center;">
-                    <h4 style="color: #17a2b8; margin-bottom: 5px;">
-                        <?php echo count(array_filter($prizes, function($p) { return $p['is_active']; })); ?>
-                    </h4>
-                    <p style="color: #6c757d; margin: 0;">Đang hoạt động</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body" style="text-align: center;">
-                    <h4 style="color: #dc3545; margin-bottom: 5px;">
-                        <?php echo count(array_filter($prizes, function($p) { return !$p['is_active']; })); ?>
-                    </h4>
-                    <p style="color: #6c757d; margin: 0;">Tạm dừng</p>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 

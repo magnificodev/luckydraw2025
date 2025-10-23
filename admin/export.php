@@ -52,17 +52,21 @@ function exportPlayers() {
     $recordCount = count($players);
 
     $filename = 'nguoi_choi_' . date('Y-m-d_H-i-s') . '.csv';
+    $filePath = '../exports/' . $filename;
+
+    // Create exports directory if it doesn't exist
+    if (!is_dir('../exports')) {
+        mkdir('../exports', 0755, true);
+    }
 
     // Log export activity
     logExportActivity($admin['id'], 'players', $filename, $recordCount);
 
-    header('Content-Type: text/csv; charset=utf-8');
-    header('Content-Disposition: attachment; filename="' . $filename . '"');
-
+    // Create CSV file
+    $output = fopen($filePath, 'w');
+    
     // Add BOM for UTF-8
-    echo "\xEF\xBB\xBF";
-
-    $output = fopen('php://output', 'w');
+    fwrite($output, "\xEF\xBB\xBF");
 
     // CSV Headers
     fputcsv($output, [
@@ -87,11 +91,17 @@ function exportPlayers() {
     }
 
     fclose($output);
+
+    // Download the file
+    header('Content-Type: application/octet-stream');
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
+    header('Content-Length: ' . filesize($filePath));
+    readfile($filePath);
     exit();
 }
 
 function exportPrizes() {
-    global $pdo;
+    global $pdo, $admin;
 
     $sql = "
         SELECT pr.name, pr.stock, pr.is_active,
@@ -104,16 +114,24 @@ function exportPrizes() {
 
     $stmt = $pdo->query($sql);
     $prizes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $recordCount = count($prizes);
 
     $filename = 'qua_tang_' . date('Y-m-d_H-i-s') . '.csv';
+    $filePath = '../exports/' . $filename;
 
-    header('Content-Type: text/csv; charset=utf-8');
-    header('Content-Disposition: attachment; filename="' . $filename . '"');
+    // Create exports directory if it doesn't exist
+    if (!is_dir('../exports')) {
+        mkdir('../exports', 0755, true);
+    }
 
+    // Log export activity
+    logExportActivity($admin['id'], 'prizes', $filename, $recordCount);
+
+    // Create CSV file
+    $output = fopen($filePath, 'w');
+    
     // Add BOM for UTF-8
-    echo "\xEF\xBB\xBF";
-
-    $output = fopen('php://output', 'w');
+    fwrite($output, "\xEF\xBB\xBF");
 
     // CSV Headers
     fputcsv($output, [
@@ -136,11 +154,17 @@ function exportPrizes() {
     }
 
     fclose($output);
+
+    // Download the file
+    header('Content-Type: application/octet-stream');
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
+    header('Content-Length: ' . filesize($filePath));
+    readfile($filePath);
     exit();
 }
 
 function exportStatistics() {
-    global $pdo;
+    global $pdo, $admin;
 
     // Get daily statistics for the last 30 days
     $sql = "
@@ -158,16 +182,24 @@ function exportStatistics() {
 
     $stmt = $pdo->query($sql);
     $dailyStats = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $recordCount = count($dailyStats);
 
     $filename = 'thong_ke_' . date('Y-m-d_H-i-s') . '.csv';
+    $filePath = '../exports/' . $filename;
 
-    header('Content-Type: text/csv; charset=utf-8');
-    header('Content-Disposition: attachment; filename="' . $filename . '"');
+    // Create exports directory if it doesn't exist
+    if (!is_dir('../exports')) {
+        mkdir('../exports', 0755, true);
+    }
 
+    // Log export activity
+    logExportActivity($admin['id'], 'statistics', $filename, $recordCount);
+
+    // Create CSV file
+    $output = fopen($filePath, 'w');
+    
     // Add BOM for UTF-8
-    echo "\xEF\xBB\xBF";
-
-    $output = fopen('php://output', 'w');
+    fwrite($output, "\xEF\xBB\xBF");
 
     // CSV Headers
     fputcsv($output, [
@@ -188,6 +220,12 @@ function exportStatistics() {
     }
 
     fclose($output);
+
+    // Download the file
+    header('Content-Type: application/octet-stream');
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
+    header('Content-Length: ' . filesize($filePath));
+    readfile($filePath);
     exit();
 }
 

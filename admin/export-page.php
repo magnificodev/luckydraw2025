@@ -318,6 +318,17 @@ function exportCSV(type) {
     // Show loading message
     showAlert('Đang tạo file CSV...', 'info');
 }
+
+function downloadExport(filename) {
+    // Create a link to download the file
+    const link = document.createElement('a');
+    link.href = 'download.php?file=' + encodeURIComponent(filename);
+    link.download = filename;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
 </script>
 
 <?php require_once 'includes/footer.php'; ?>

@@ -10,23 +10,40 @@ body {
     overflow: hidden;
     height: 100vh;
     width: 100vw;
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-/* Screen Management */
+/* Screen Management - Mobile First 9:16 Aspect Ratio */
 .screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    max-width: 450px; /* 9:16 aspect ratio for mobile */
+    max-height: 800px;
     display: none;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    margin: 0 auto;
+    background: #000;
+    overflow: hidden;
 }
 
 .screen.active {
     display: flex;
+}
+
+/* Letterbox for larger screens */
+@media (min-width: 451px) {
+    .screen {
+        width: 450px;
+        height: 800px;
+        border-radius: 20px;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    }
 }
 
 /* Background Overlays */
@@ -69,19 +86,24 @@ body {
     z-index: -1;
 }
 
-/* Content Container */
+/* Content Container - Mobile Optimized */
 .content {
     position: relative;
     z-index: 1;
     width: 100%;
-    max-width: 400px;
+    height: 100%;
     padding: 20px;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
 }
 
-/* Header Section */
+/* Header Section - Mobile Optimized */
 .header {
-    margin-bottom: 30px;
+    margin-bottom: 20px;
+    flex-shrink: 0;
 }
 
 .logo-section {
@@ -93,53 +115,58 @@ body {
 
 .vpbank-logo {
     color: #dc2626;
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: bold;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .solution-day {
     color: #00ff88;
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-weight: bold;
     text-shadow: 0 0 10px rgba(0, 255, 136, 0.8);
-    letter-spacing: 2px;
+    letter-spacing: 1px;
 }
 
-/* Screen 1 Styles */
+/* Screen 1 Styles - Mobile Optimized */
 .title-section {
-    margin-bottom: 40px;
+    margin-bottom: 30px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .title-line1,
 .title-line3 {
     color: white;
-    font-size: 2rem;
-    margin-bottom: 10px;
+    font-size: 1.5rem;
+    margin-bottom: 8px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .title-line2 {
     color: #00ff88;
-    font-size: 3rem;
+    font-size: 2.2rem;
     font-weight: bold;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     text-shadow: 0 0 20px rgba(0, 255, 136, 0.8);
     transform: perspective(100px) rotateX(10deg);
 }
 
 .input-section {
-    margin-bottom: 40px;
+    margin-bottom: 30px;
+    flex-shrink: 0;
 }
 
 #phoneInput {
     width: 100%;
-    padding: 15px 20px;
-    font-size: 1.2rem;
-    border: 3px solid #00ff88;
-    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 1.1rem;
+    border: 2px solid #00ff88;
+    border-radius: 8px;
     background: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
     outline: none;
     transition: all 0.3s ease;
 }
@@ -182,22 +209,24 @@ body {
 
 .start-button img,
 .spin-button img {
-    max-width: 200px;
+    max-width: 180px;
     height: auto;
 }
 
-/* Screen 2 - Wheel Styles */
+/* Screen 2 - Wheel Styles - Mobile Optimized */
 .wheel-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 30px;
+    gap: 20px;
+    flex-grow: 1;
+    justify-content: center;
 }
 
 .wheel-wrapper {
     position: relative;
-    width: 300px;
-    height: 300px;
+    width: 250px;
+    height: 250px;
 }
 
 .wheel {
@@ -226,39 +255,42 @@ body {
     justify-content: center;
 }
 
-/* Screen 3 - Prize Display */
+/* Screen 3 - Prize Display - Mobile Optimized */
 .thank-you {
-    margin-bottom: 30px;
+    margin-bottom: 20px;
+    flex-shrink: 0;
 }
 
 .thank-you p {
     color: white;
-    font-size: 1.1rem;
+    font-size: 1rem;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    line-height: 1.5;
+    line-height: 1.4;
 }
 
 .prize-section {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 15px;
+    flex-grow: 1;
+    justify-content: center;
 }
 
 .prize-image-container {
-    width: 200px;
-    height: 200px;
+    width: 160px;
+    height: 160px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
 }
 
 .prize-image {
-    max-width: 150px;
-    max-height: 150px;
+    max-width: 120px;
+    max-height: 120px;
     object-fit: contain;
 }
 
@@ -268,9 +300,9 @@ body {
 
 .prize-name {
     color: #00ff88;
-    font-size: 2.5rem;
+    font-size: 1.8rem;
     font-weight: bold;
-    text-shadow: 0 0 20px rgba(0, 255, 136, 0.8);
+    text-shadow: 0 0 15px rgba(0, 255, 136, 0.8);
     transform: perspective(100px) rotateX(10deg);
 }
 
@@ -318,42 +350,70 @@ body {
     }
 }
 
-/* Responsive Design */
-@media (max-width: 480px) {
+/* Responsive Design - Mobile First */
+@media (max-width: 450px) {
+    .screen {
+        width: 100vw;
+        height: 100vh;
+        max-width: none;
+        max-height: none;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
     .content {
         padding: 15px;
     }
 
     .title-line2 {
-        font-size: 2.5rem;
-    }
-
-    .prize-name {
         font-size: 2rem;
     }
 
+    .prize-name {
+        font-size: 1.6rem;
+    }
+
     .wheel-wrapper {
-        width: 250px;
-        height: 250px;
+        width: 220px;
+        height: 220px;
     }
 
     .start-button img,
     .spin-button img {
-        max-width: 150px;
+        max-width: 160px;
+    }
+
+    .prize-image-container {
+        width: 140px;
+        height: 140px;
+    }
+
+    .prize-image {
+        max-width: 100px;
+        max-height: 100px;
     }
 }
 
 @media (max-width: 360px) {
+    .content {
+        padding: 10px;
+    }
+
     .title-line2 {
-        font-size: 2rem;
+        font-size: 1.8rem;
     }
 
     .prize-name {
-        font-size: 1.8rem;
+        font-size: 1.4rem;
     }
 
     .wheel-wrapper {
         width: 200px;
         height: 200px;
+    }
+
+    .start-button img,
+    .spin-button img {
+        max-width: 140px;
     }
 }

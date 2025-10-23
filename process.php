@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Check if phone number already exists
         try {
             $pdo = getDatabaseConnection();
-            $stmt = $pdo->prepare("SELECT prize_name, winning_index FROM participants WHERE phone_number = ?");
+            $stmt = $pdo->prepare("SELECT pr.name as prize_name, p.winning_index FROM participants p JOIN prizes pr ON p.prize_id = pr.id WHERE p.phone_number = ?");
             $stmt->execute([$phone]);
             $result = $stmt->fetch();
 
@@ -39,34 +39,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header('Location: index.php?screen=3');
             } else {
                 // New phone number, select prize first and proceed to wheel
-                // Define available prize catalog (12 prizes for 12 segments)
-                // Order matches the actual wheel layout (clockwise from top)
-                $prizes = [
-                    'Tai nghe Bluetooth',        // Index 0
-                    'Bình thủy tinh',            // Index 1
-                    'Tag hành lý',               // Index 2
-                    'Móc khóa',                  // Index 3
-                    'Túi tote',                  // Index 4
-                    'Bình thủy tinh',            // Index 5
-                    'Móc khóa',                  // Index 6
-                    'Bịt mắt ngủ',               // Index 7
-                    'Tag hành lý',               // Index 8
-                    'Túi tote',                  // Index 9
-                    'Ô gấp',                     // Index 10
-                    'Mũ bảo hiểm'                // Index 11
-                ];
+                // Fetch prizes from database with stock check
+                $stmt = $pdo->prepare("SELECT id, name, display_order FROM prizes WHERE stock > 0 AND is_active = TRUE ORDER BY display_order ASC");
+                $stmt->execute();
+                $availablePrizes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                // Wheel has 12 segments; generate winning index in range [0, 11]
-                $totalSegments = 12;
+                if (empty($availablePrizes)) {
+                    $_SESSION['error'] = 'Xin lỗi, hiện tại không còn quà tặng nào. Vui lòng thử lại sau!';
+                    header('Location: index.php?screen=1');
+                    exit();
+                }
+
+                $totalSegments = count($availablePrizes);
                 $winningIndex = random_int(0, $totalSegments - 1);
 
-                // Map winning index to an actual prize entry
-                $selectedPrize = $prizes[$winningIndex];
+                // Get the selected prize
+                $selectedPrize = $availablePrizes[$winningIndex];
 
                 // Debug log
                 error_log("=== BACKEND DEBUG ===");
                 error_log("Winning Index: " . $winningIndex);
-                error_log("Prize: " . $selectedPrize);
+                error_log("Prize: " . $selectedPrize['name']);
+                error_log("Prize ID: " . $selectedPrize['id']);
                 error_log("Total Segments: " . $totalSegments);
                 error_log("Degrees per segment: " . (360 / $totalSegments));
                 error_log("====================");
@@ -96,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $pdo = getDatabaseConnection();
             // Double-check: Ensure phone number hasn't been used since entering screen 2
-            $stmt = $pdo->prepare("SELECT id, prize_name, winning_index FROM participants WHERE phone_number = ?");
+            $stmt = $pdo->prepare("SELECT p.id, pr.name as prize_name, p.winning_index FROM participants p JOIN prizes pr ON p.prize_id = pr.id WHERE p.phone_number = ?");
             $stmt->execute([$phone]);
             $existingParticipant = $stmt->fetch();
 
@@ -113,22 +107,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             // Insert new participant with prize and tracking info
-            $stmt = $pdo->prepare("INSERT INTO participants (phone_number, prize_name, winning_index, ip_address, user_agent, session_id) VALUES (?, ?, ?, ?, ?, ?)");
+            $stmt = $pdo->prepare("INSERT INTO participants (phone_number, prize_id, winning_index, ip_address, user_agent, session_id) VALUES (?, ?, ?, ?, ?, ?)");
             $stmt->execute([
                 $phone,
-                $selectedPrize,
+                $selectedPrize['id'],
                 $_SESSION['winning_index'],
                 $_SERVER['REMOTE_ADDR'] ?? null,
                 $_SERVER['HTTP_USER_AGENT'] ?? null,
                 session_id()
             ]);
 
-            // Update prize statistics
-            $stmt = $pdo->prepare("INSERT INTO prize_statistics (prize_name, winning_index, count, last_won_at) VALUES (?, ?, 1, NOW()) ON DUPLICATE KEY UPDATE count = count + 1, last_won_at = NOW()");
-            $stmt->execute([$selectedPrize, $_SESSION['winning_index']]);
+            // Decrease stock
+            $stmt = $pdo->prepare("UPDATE prizes SET stock = stock - 1 WHERE id = ? AND stock > 0");
+            $stmt->execute([$selectedPrize['id']]);
 
             // Set prize in session
-            $_SESSION['current_prize'] = ['name' => $selectedPrize];
+            $_SESSION['current_prize'] = ['name' => $selectedPrize['name']];
             // Clear selected prize and winning index from session
             unset($_SESSION['selected_prize']);
             unset($_SESSION['winning_index']);

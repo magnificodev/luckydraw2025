@@ -3,7 +3,7 @@ require_once 'includes/auth.php';
 requireAuth();
 
 $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
-$limit = 5; // 5 items per page
+$limit = 4; // 4 items per page - tránh thanh cuộn
 $offset = ($page - 1) * $limit;
 
 try {

@@ -103,9 +103,8 @@ try {
                 <option value="active" <?php echo $status === 'active' ? 'selected' : ''; ?>>Hoạt động</option>
                 <option value="inactive" <?php echo $status === 'inactive' ? 'selected' : ''; ?>>Tạm dừng</option>
             </select>
-            <button type="button" class="btn btn-primary" onclick="refreshPage()">
+            <button type="button" class="btn btn-primary refresh-btn" onclick="refreshPage()" title="Làm mới">
                 <i class="fas fa-sync-alt"></i>
-                Làm mới
             </button>
         </div>
     </div>
@@ -263,6 +262,38 @@ input:checked + .slider:before {
     .row {
         grid-template-columns: 1fr;
     }
+}
+
+/* Refresh button styling to match form controls height */
+.refresh-btn {
+    height: 44px !important;
+    width: 44px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 8px !important;
+    border: 2px solid #e9ecef !important;
+    background-color: #02d15e !important;
+    color: white !important;
+    transition: all 0.3s ease !important;
+}
+
+.refresh-btn:hover {
+    background-color: #01b84d !important;
+    border-color: #02d15e !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 0 0 3px rgba(2, 209, 94, 0.1) !important;
+}
+
+.refresh-btn:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 1px 2px rgba(2, 209, 94, 0.3) !important;
+}
+
+.refresh-btn i {
+    font-size: 16px !important;
+    margin: 0 !important;
 }
 </style>
 

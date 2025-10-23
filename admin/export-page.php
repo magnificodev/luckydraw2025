@@ -154,10 +154,16 @@ require_once 'includes/header.php';
 <div id="exportHistoryModal" class="modal" style="display: none;">
     <div class="modal-content" style="max-width: 800px; width: 90%;">
         <div class="modal-header">
-            <h3>
-                <i class="fas fa-history"></i>
-                Lịch sử Export đầy đủ
-            </h3>
+            <div class="modal-title-section">
+                <h3>
+                    <i class="fas fa-history"></i>
+                    Lịch sử Export đầy đủ
+                </h3>
+                <div class="modal-note" style="margin-top: 8px; font-size: 0.85rem; color: #6c757d;">
+                    <i class="fas fa-info-circle" style="color: #02d15e; margin-right: 6px;"></i>
+                    Chỉ hiển thị 20 file export gần nhất
+                </div>
+            </div>
             <button class="modal-close" onclick="closeExportHistoryModal()">
                 <i class="fas fa-times"></i>
             </button>
@@ -165,10 +171,6 @@ require_once 'includes/header.php';
         <div class="modal-body">
             <div id="exportHistoryContent">
                 <!-- Content will be loaded here -->
-            </div>
-            <div class="modal-note" style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 6px; border-left: 4px solid #02d15e; font-size: 0.9rem; color: #6c757d;">
-                <i class="fas fa-info-circle" style="color: #02d15e; margin-right: 8px;"></i>
-                Chỉ hiển thị 20 file export gần nhất
             </div>
         </div>
     </div>
@@ -388,6 +390,12 @@ require_once 'includes/header.php';
 /* Specific styling for export history modal close button */
 #exportHistoryModal .modal-header i {
     color: #02d15e !important;
+}
+
+.modal-title-section {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 
 .modal-close:hover {

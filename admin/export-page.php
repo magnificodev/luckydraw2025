@@ -166,6 +166,10 @@ require_once 'includes/header.php';
             <div id="exportHistoryContent">
                 <!-- Content will be loaded here -->
             </div>
+            <div class="modal-note" style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 6px; border-left: 4px solid #02d15e; font-size: 0.9rem; color: #6c757d;">
+                <i class="fas fa-info-circle" style="color: #02d15e; margin-right: 8px;"></i>
+                Chỉ hiển thị 20 file export gần nhất
+            </div>
         </div>
     </div>
 </div>
@@ -514,18 +518,18 @@ function downloadExport(filename) {
 
 function openExportHistoryModal() {
     document.getElementById('exportHistoryModal').style.display = 'flex';
-    loadExportHistory(1);
+    loadExportHistory();
 }
 
 function closeExportHistoryModal() {
     document.getElementById('exportHistoryModal').style.display = 'none';
 }
 
-function loadExportHistory(page = 1) {
+function loadExportHistory() {
     const content = document.getElementById('exportHistoryContent');
     content.innerHTML = '<div style="text-align: center; padding: 20px;"><i class="fas fa-spinner fa-spin"></i> Đang tải...</div>';
 
-    fetch(`export-history-ajax.php?page=${page}`)
+    fetch('export-history-ajax.php')
         .then(response => response.text())
         .then(data => {
             content.innerHTML = data;

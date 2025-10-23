@@ -381,15 +381,15 @@ form#phoneForm {
         width: 95%;
         max-width: 350px;
     }
-    
+
     .alert-content {
         padding: 20px;
     }
-    
+
     .alert-content h3 {
         font-size: 1.1rem;
     }
-    
+
     .alert-content p {
         font-size: 0.9rem;
     }

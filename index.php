@@ -1,6 +1,8 @@
 <?php
 // Lucky Draw Wheel App - Main Entry Point
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Initialize session variables if not set
 if (!isset($_SESSION['current_phone'])) {
@@ -48,7 +50,7 @@ if ($screen == 2 && !isset($_SESSION['winning_index'])) {
                 type: '<?php echo $_SESSION['alert_type'] ?? 'info'; ?>'
             };
         </script>
-        <?php 
+        <?php
         unset($_SESSION['alert_message']);
         unset($_SESSION['alert_type']);
         ?>

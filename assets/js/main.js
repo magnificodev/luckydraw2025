@@ -83,7 +83,7 @@ function checkForAlertMessage() {
 function showAlertPopup(message, type = 'info') {
     const alertOverlay = document.createElement('div');
     alertOverlay.className = 'alert-overlay';
-    
+
     const alertBox = document.createElement('div');
     alertBox.className = `alert-box alert-${type}`;
     alertBox.innerHTML = `
@@ -96,10 +96,10 @@ function showAlertPopup(message, type = 'info') {
             <button class="alert-btn" onclick="closeAlert()">OK</button>
         </div>
     `;
-    
+
     alertOverlay.appendChild(alertBox);
     document.body.appendChild(alertOverlay);
-    
+
     // Auto show with animation
     setTimeout(() => {
         alertOverlay.classList.add('show');

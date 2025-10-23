@@ -1,6 +1,8 @@
 <?php
 // Lucky Draw Wheel App - Process Handler
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 require_once 'config.php';
 
 // Handle form submissions

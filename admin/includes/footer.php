@@ -7,8 +7,10 @@
     <div id="logoutModal" class="modal" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
-                <i class="fas fa-exclamation-triangle"></i>
-                <h3>Xác nhận đăng xuất</h3>
+                <div class="modal-title-group">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Xác nhận đăng xuất</h3>
+                </div>
             </div>
             <div class="modal-body">
                 <p>Bạn có chắc chắn muốn đăng xuất khỏi hệ thống?</p>

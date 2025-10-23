@@ -267,6 +267,11 @@ try {
     gap: 15px;
     flex-wrap: wrap;
     align-items: center;
+    width: 100%;
+}
+
+.search-filter {
+    width: 100%;
 }
 
 .filter-form .search-box {

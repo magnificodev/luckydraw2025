@@ -151,8 +151,8 @@ try {
                             </label>
                         </td>
                         <td>
-                            <button class="btn btn-sm btn-primary"
-                                    onclick="updateStock(<?php echo $prize['id']; ?>)">
+                            <button class="btn btn-sm btn-primary save-stock-btn"
+                                    data-prize-id="<?php echo $prize['id']; ?>">
                                 <i class="fas fa-save"></i>
                                 Lưu
                             </button>

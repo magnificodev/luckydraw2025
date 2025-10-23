@@ -94,14 +94,26 @@ document.addEventListener('DOMContentLoaded', function () {
     // Optional: Add visual feedback for unsaved changes
     const stockInputs = document.querySelectorAll('.stock-input');
     const activeToggles = document.querySelectorAll('.active-toggle');
-    
+
     // Add change tracking for visual feedback
     [...stockInputs, ...activeToggles].forEach((element) => {
         element.addEventListener('change', function () {
             const row = this.closest('tr');
             const saveBtn = row.querySelector('.save-stock-btn');
-            saveBtn.classList.add('btn-warning');
-            saveBtn.innerHTML = '<i class="fas fa-save"></i> Có thay đổi';
+            
+            // Debug logging
+            console.log('Change detected:', this);
+            console.log('Row found:', row);
+            console.log('Save button found:', saveBtn);
+            
+            // Check if save button exists before manipulating it
+            if (saveBtn) {
+                saveBtn.classList.add('btn-warning');
+                saveBtn.innerHTML = '<i class="fas fa-save"></i> Có thay đổi';
+                console.log('Button updated successfully');
+            } else {
+                console.warn('Save button not found for row:', row);
+            }
         });
     });
 });
@@ -144,14 +156,14 @@ function updateStock(prizeId, stock, isActive, saveButton = null) {
                 const data = JSON.parse(text);
                 if (data.success) {
                     showAlert('Cập nhật thành công!', 'success');
-                    
+
                     // Reset button state on success
                     if (saveButton) {
                         saveButton.innerHTML = '<i class="fas fa-save"></i> Lưu';
                         saveButton.disabled = false;
                         saveButton.classList.remove('btn-warning');
                         saveButton.classList.add('btn-success');
-                        
+
                         // Reset to normal state after 2 seconds
                         setTimeout(() => {
                             saveButton.classList.remove('btn-success');
@@ -159,7 +171,7 @@ function updateStock(prizeId, stock, isActive, saveButton = null) {
                     }
                 } else {
                     showAlert('Có lỗi xảy ra: ' + data.message, 'error');
-                    
+
                     // Reset button state on error
                     if (saveButton) {
                         saveButton.innerHTML = '<i class="fas fa-save"></i> Lưu';
@@ -171,7 +183,7 @@ function updateStock(prizeId, stock, isActive, saveButton = null) {
                 console.error('JSON parse error:', e);
                 console.error('Response text:', text);
                 showAlert('Server trả về dữ liệu không hợp lệ', 'error');
-                
+
                 // Reset button state on error
                 if (saveButton) {
                     saveButton.innerHTML = '<i class="fas fa-save"></i> Lưu';
@@ -183,7 +195,7 @@ function updateStock(prizeId, stock, isActive, saveButton = null) {
         .catch((error) => {
             console.error('Fetch error:', error);
             showAlert('Có lỗi xảy ra khi cập nhật: ' + error.message, 'error');
-            
+
             // Reset button state on error
             if (saveButton) {
                 saveButton.innerHTML = '<i class="fas fa-save"></i> Lưu';

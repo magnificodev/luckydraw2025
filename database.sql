@@ -26,20 +26,42 @@ CREATE TABLE prizes (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Insert prizes with initial stock
+-- Insert prizes with initial stock (8 unique products)
 INSERT INTO prizes (name, display_order, stock) VALUES
 ('Tai nghe Bluetooth', 0, 10),
 ('Bình thủy tinh', 1, 15),
 ('Tag hành lý', 2, 20),
 ('Móc khóa', 3, 25),
 ('Túi tote', 4, 12),
-('Bình thủy tinh (2)', 5, 8),
-('Móc khóa (2)', 6, 18),
-('Bịt mắt ngủ', 7, 30),
-('Tag hành lý (2)', 8, 22),
-('Túi tote (2)', 9, 14),
-('Ô gấp', 10, 6),
-('Mũ bảo hiểm', 11, 4);
+('Bịt mắt ngủ', 5, 30),
+('Ô gấp', 6, 6),
+('Mũ bảo hiểm', 7, 4);
+
+-- =====================================================
+-- 1.1. WHEEL SEGMENTS TABLE (Virtual segments mapping)
+-- =====================================================
+CREATE TABLE wheel_segments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    segment_index INT NOT NULL UNIQUE COMMENT '0-11 for 12 segments',
+    product_id TINYINT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES prizes(id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Insert wheel segments mapping (12 segments → 8 products)
+INSERT INTO wheel_segments (segment_index, product_id) VALUES
+(0, 1),   -- Tai nghe bluetooth
+(1, 2),   -- Bình thủy tinh
+(2, 3),   -- Tag hành lý
+(3, 4),   -- Móc khóa
+(4, 5),   -- Túi tote
+(5, 2),   -- Bình thủy tinh (duplicate)
+(6, 4),   -- Móc khóa (duplicate)
+(7, 6),   -- Bịt mắt ngủ
+(8, 3),   -- Tag hành lý (duplicate)
+(9, 5),   -- Túi tote (duplicate)
+(10, 7),  -- Ô gấp
+(11, 8);  -- Mũ bảo hiểm
 
 -- =====================================================
 -- 2. ADMIN USERS TABLE

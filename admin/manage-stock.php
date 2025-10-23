@@ -46,7 +46,7 @@ try {
     $search = $_GET['search'] ?? '';
     $status = $_GET['status'] ?? 'all';
 
-    $whereConditions = [];
+    $whereConditions = ["pr.name NOT LIKE '%(2)' AND pr.name NOT LIKE '%(3)' AND pr.name NOT LIKE '%(4)'"];
     $params = [];
 
     if (!empty($search)) {
@@ -60,8 +60,9 @@ try {
         $whereConditions[] = "pr.is_active = 0";
     }
 
-    $whereClause = !empty($whereConditions) ? 'WHERE ' . implode(' AND ', $whereConditions) : '';
+    $whereClause = 'WHERE ' . implode(' AND ', $whereConditions);
 
+    // Only show unique products (not duplicates with (2) suffix)
     $sql = "
         SELECT pr.id, pr.name, pr.display_order, pr.stock, pr.is_active,
                COALESCE(ps.count, 0) as distributed_count

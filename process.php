@@ -42,38 +42,80 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ];
                 header('Location: index.php?screen=3');
             } else {
-                // New phone number, select prize first and proceed to wheel
-                // Fetch prizes from database with stock check
-                $stmt = $pdo->prepare("SELECT id, name, display_order FROM prizes WHERE stock > 0 AND is_active = TRUE ORDER BY display_order ASC");
+                // New phone number, select prize using virtual segments
+                // Get all available products (with stock > 0)
+                $stmt = $pdo->prepare("SELECT DISTINCT p.id, p.name FROM prizes p WHERE p.stock > 0 AND p.is_active = TRUE");
                 $stmt->execute();
-                $availablePrizes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $availableProducts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                if (empty($availablePrizes)) {
+                if (empty($availableProducts)) {
                     $_SESSION['alert_message'] = 'Xin lỗi, hiện tại không còn quà tặng nào. Vui lòng thử lại sau!';
                     $_SESSION['alert_type'] = 'error';
                     header('Location: index.php?screen=1');
                     exit();
                 }
 
-                $totalSegments = count($availablePrizes);
-                $winningIndex = random_int(0, $totalSegments - 1);
+                // Get all wheel segments that map to available products
+                $stmt = $pdo->prepare("
+                    SELECT ws.segment_index, ws.product_id, p.name, p.stock 
+                    FROM wheel_segments ws 
+                    JOIN prizes p ON ws.product_id = p.id 
+                    WHERE p.stock > 0 AND p.is_active = TRUE 
+                    ORDER BY ws.segment_index
+                ");
+                $stmt->execute();
+                $availableSegments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                // Get the selected prize
-                $selectedPrize = $availablePrizes[$winningIndex];
+                if (empty($availableSegments)) {
+                    $_SESSION['alert_message'] = 'Xin lỗi, hiện tại không còn quà tặng nào. Vui lòng thử lại sau!';
+                    $_SESSION['alert_type'] = 'error';
+                    header('Location: index.php?screen=1');
+                    exit();
+                }
+
+                // Random select from available segments (0-11)
+                $totalSegments = 12;
+                $winningIndex = random_int(0, 11);
+                
+                // Find the product for this segment
+                $selectedProduct = null;
+                foreach ($availableSegments as $segment) {
+                    if ($segment['segment_index'] == $winningIndex) {
+                        $selectedProduct = $segment;
+                        break;
+                    }
+                }
+
+                // If this segment's product is out of stock, find another available segment
+                if (!$selectedProduct || $selectedProduct['stock'] <= 0) {
+                    $availableSegmentIndices = array_column($availableSegments, 'segment_index');
+                    $winningIndex = $availableSegmentIndices[array_rand($availableSegmentIndices)];
+                    
+                    foreach ($availableSegments as $segment) {
+                        if ($segment['segment_index'] == $winningIndex) {
+                            $selectedProduct = $segment;
+                            break;
+                        }
+                    }
+                }
 
                 // Debug log
-                error_log("=== BACKEND DEBUG ===");
+                error_log("=== BACKEND DEBUG (Virtual Segments) ===");
                 error_log("Winning Index: " . $winningIndex);
-                error_log("Prize: " . $selectedPrize['name']);
-                error_log("Prize ID: " . $selectedPrize['id']);
+                error_log("Product: " . $selectedProduct['name']);
+                error_log("Product ID: " . $selectedProduct['product_id']);
                 error_log("Total Segments: " . $totalSegments);
                 error_log("Degrees per segment: " . (360 / $totalSegments));
-                error_log("====================");
+                error_log("Available segments: " . count($availableSegments));
+                error_log("=====================================");
 
                 // Store for frontend animation and later persistence
                 $_SESSION['winning_index'] = $winningIndex;
                 $_SESSION['total_segments'] = $totalSegments;
-                $_SESSION['selected_prize'] = $selectedPrize;
+                $_SESSION['selected_prize'] = [
+                    'id' => $selectedProduct['product_id'],
+                    'name' => $selectedProduct['name']
+                ];
 
                 header('Location: index.php?screen=2');
             }

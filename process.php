@@ -155,13 +155,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit();
             }
 
+            // Get real IP address (handle proxies and load balancers)
+            function getRealIPAddress() {
+                $ipKeys = [
+                    'HTTP_CF_CONNECTING_IP',     // Cloudflare
+                    'HTTP_CLIENT_IP',            // Proxy
+                    'HTTP_X_FORWARDED_FOR',      // Load balancer/proxy
+                    'HTTP_X_FORWARDED',          // Proxy
+                    'HTTP_X_CLUSTER_CLIENT_IP', // Cluster
+                    'HTTP_FORWARDED_FOR',        // Proxy
+                    'HTTP_FORWARDED',            // Proxy
+                    'REMOTE_ADDR'               // Standard
+                ];
+                
+                // Debug: Log all available IP headers
+                error_log("IP Detection Debug:");
+                foreach ($ipKeys as $key) {
+                    if (isset($_SERVER[$key])) {
+                        error_log("$key: " . $_SERVER[$key]);
+                    }
+                }
+                
+                foreach ($ipKeys as $key) {
+                    if (!empty($_SERVER[$key])) {
+                        $ip = $_SERVER[$key];
+                        // Handle comma-separated IPs (take first one)
+                        if (strpos($ip, ',') !== false) {
+                            $ip = trim(explode(',', $ip)[0]);
+                        }
+                        // Validate IP (allow private ranges for testing)
+                        if (filter_var($ip, FILTER_VALIDATE_IP)) {
+                            error_log("Selected IP from $key: $ip");
+                            return $ip;
+                        }
+                    }
+                }
+                
+                // Fallback to REMOTE_ADDR even if it's localhost
+                $fallbackIP = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+                error_log("Fallback IP: $fallbackIP");
+                return $fallbackIP;
+            }
+
             // Insert new participant with prize and tracking info
             $stmt = $pdo->prepare("INSERT INTO participants (phone_number, prize_id, winning_index, ip_address, user_agent, session_id) VALUES (?, ?, ?, ?, ?, ?)");
             $stmt->execute([
                 $phone,
                 $selectedPrize['id'],
                 $_SESSION['winning_index'],
-                $_SERVER['REMOTE_ADDR'] ?? null,
+                getRealIPAddress(),
                 $_SERVER['HTTP_USER_AGENT'] ?? null,
                 session_id()
             ]);

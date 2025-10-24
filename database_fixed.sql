@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS participants (
 -- =====================================================
 CREATE TABLE IF NOT EXISTS prize_statistics (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    prize_id TINYINT NOT NULL,
+    prize_id TINYINT NOT NULL UNIQUE,
     count INT DEFAULT 0,
     last_won_at TIMESTAMP NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -158,8 +158,8 @@ INSERT IGNORE INTO system_settings (setting_key, setting_value, description) VAL
 -- =====================================================
 
 -- Trigger to update prize statistics when new participant is inserted
-DELIMITER $$
-CREATE TRIGGER IF NOT EXISTS update_prize_stats_after_insert
+DELIMITER //
+CREATE TRIGGER update_prize_stats_after_insert
 AFTER INSERT ON participants
 FOR EACH ROW
 BEGIN
@@ -169,7 +169,7 @@ BEGIN
         count = count + 1,
         last_won_at = NEW.created_at,
         updated_at = CURRENT_TIMESTAMP;
-END$$
+END//
 DELIMITER ;
 
 -- =====================================================

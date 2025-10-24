@@ -172,7 +172,7 @@ DELIMITER ;
 
 -- Dashboard statistics view
 CREATE OR REPLACE VIEW dashboard_stats AS
-SELECT 
+SELECT
     (SELECT COUNT(*) FROM participants) as total_participants,
     (SELECT COUNT(*) FROM participants WHERE DATE(created_at) = CURDATE()) as today_participants,
     (SELECT SUM(stock) FROM prizes WHERE is_active = TRUE) as total_stock,
@@ -180,7 +180,7 @@ SELECT
 
 -- Prize analytics view
 CREATE OR REPLACE VIEW prize_analytics AS
-SELECT 
+SELECT
     p.name as prize_name,
     p.stock,
     p.is_active,
@@ -192,14 +192,14 @@ ORDER BY p.display_order;
 
 -- Recent activity view
 CREATE OR REPLACE VIEW recent_activity AS
-SELECT 
+SELECT
     'participant' as type,
     phone_number as identifier,
     created_at,
     'Người chơi mới' as description
 FROM participants
 UNION ALL
-SELECT 
+SELECT
     'export' as type,
     filename as identifier,
     created_at,

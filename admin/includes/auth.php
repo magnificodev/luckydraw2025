@@ -2,7 +2,11 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-require_once '../config/admin-config.php';
+
+// Only require admin-config.php if constants are not already defined
+if (!defined('ADMIN_SESSION_KEY')) {
+    require_once '../config/admin-config.php';
+}
 
 // Check if user is logged in
 function isAdminLoggedIn() {

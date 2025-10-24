@@ -121,8 +121,11 @@ INSERT IGNORE INTO prizes (id, name, display_order, stock, is_active) VALUES
 (7, 'Ô gấp', 7, 20, TRUE),
 (8, 'Mũ bảo hiểm', 8, 15, TRUE);
 
--- Insert wheel segments mapping (12 segments to 8 products)
-INSERT IGNORE INTO wheel_segments (segment_index, product_id) VALUES
+-- Clear existing wheel segments first to avoid duplicates
+DELETE FROM wheel_segments;
+
+-- Insert wheel segments mapping (12 segments to 8 products - matches real wheel)
+INSERT INTO wheel_segments (segment_index, product_id) VALUES
 (0, 1),   -- Tai nghe bluetooth
 (1, 2),   -- Bình thủy tinh
 (2, 3),   -- Tag hành lý

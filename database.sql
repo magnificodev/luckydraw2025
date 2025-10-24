@@ -48,7 +48,7 @@ CREATE TABLE wheel_segments (
     FOREIGN KEY (product_id) REFERENCES prizes(id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Insert wheel segments mapping (12 segments → 8 products)
+-- Insert wheel segments mapping (12 segments → 8 products - matches real wheel)
 INSERT INTO wheel_segments (segment_index, product_id) VALUES
 (0, 1),   -- Tai nghe bluetooth
 (1, 2),   -- Bình thủy tinh

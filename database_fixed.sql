@@ -122,25 +122,25 @@ INSERT IGNORE INTO prizes (id, name, display_order, stock, is_active) VALUES
 (8, 'Mũ bảo hiểm', 8, 15, TRUE);
 
 -- =====================================================
--- FIXED WHEEL SEGMENTS MAPPING (No duplicates)
+-- FIXED WHEEL SEGMENTS MAPPING (Matches actual wheel layout)
 -- =====================================================
 -- Clear existing wheel segments first to avoid duplicates
 DELETE FROM wheel_segments;
 
--- Insert wheel segments mapping (12 segments to 8 products - balanced)
+-- Insert wheel segments mapping (12 segments to 8 products - matches real wheel)
 INSERT INTO wheel_segments (segment_index, product_id) VALUES
 (0, 1),   -- Tai nghe bluetooth
 (1, 2),   -- Bình thủy tinh
 (2, 3),   -- Tag hành lý
 (3, 4),   -- Móc khóa
 (4, 5),   -- Túi tote
-(5, 6),   -- Bịt mắt ngủ
-(6, 7),   -- Ô gấp
-(7, 8),   -- Mũ bảo hiểm
-(8, 1),   -- Tai nghe bluetooth (balanced duplicate)
-(9, 2),   -- Bình thủy tinh (balanced duplicate)
-(10, 3),  -- Tag hành lý (balanced duplicate)
-(11, 4);  -- Móc khóa (balanced duplicate)
+(5, 2),   -- Bình thủy tinh (duplicate)
+(6, 4),   -- Móc khóa (duplicate)
+(7, 6),   -- Bịt mắt ngủ
+(8, 3),   -- Tag hành lý (duplicate)
+(9, 5),   -- Túi tote (duplicate)
+(10, 7),  -- Ô gấp
+(11, 8);  -- Mũ bảo hiểm
 
 -- Insert admin user (default admin)
 INSERT IGNORE INTO admin_users (id, username, password_hash) VALUES

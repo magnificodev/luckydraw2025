@@ -28,10 +28,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $_SESSION['current_phone'] = $phone;
 
     if ($action === 'check_phone') {
-        // Check if phone number already exists
+        // Check if phone number already exists with transaction to prevent race condition
         try {
             $pdo = getDatabaseConnection();
-            $stmt = $pdo->prepare("SELECT pr.name as prize_name, p.winning_index FROM participants p JOIN prizes pr ON p.prize_id = pr.id WHERE p.phone_number = ?");
+            $pdo->beginTransaction();
+
+            // Use FOR UPDATE to lock the row and prevent race condition
+            $stmt = $pdo->prepare("SELECT pr.name as prize_name, p.winning_index FROM participants p JOIN prizes pr ON p.prize_id = pr.id WHERE p.phone_number = ? FOR UPDATE");
             $stmt->execute([$phone]);
             $result = $stmt->fetch();
 
@@ -40,22 +43,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['current_prize'] = [
                     'name' => $result['prize_name']
                 ];
+                $pdo->commit();
                 header('Location: index.php?screen=3');
             } else {
                 // New phone number, select prize using virtual segments
-                // Get all available products (with stock > 0)
-                $stmt = $pdo->prepare("SELECT DISTINCT p.id, p.name FROM prizes p WHERE p.stock > 0 AND p.is_active = TRUE");
+                // Get all available products (with stock > 0) using FOR UPDATE to lock rows
+                $stmt = $pdo->prepare("SELECT DISTINCT p.id, p.name FROM prizes p WHERE p.stock > 0 AND p.is_active = TRUE FOR UPDATE");
                 $stmt->execute();
                 $availableProducts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 if (empty($availableProducts)) {
+                    $pdo->rollback();
                     $_SESSION['alert_message'] = 'Xin lỗi, hiện tại không còn quà tặng nào. Vui lòng thử lại sau!';
                     $_SESSION['alert_type'] = 'error';
                     header('Location: index.php?screen=1');
                     exit();
                 }
 
-                // Get all wheel segments that map to available products
+                // Get all wheel segments that map to available products with locked rows
                 $stmt = $pdo->prepare("
                     SELECT ws.segment_index, ws.product_id, p.name, p.stock
                     FROM wheel_segments ws
@@ -67,6 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $availableSegments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 if (empty($availableSegments)) {
+                    $pdo->rollback();
                     $_SESSION['alert_message'] = 'Xin lỗi, hiện tại không còn quà tặng nào. Vui lòng thử lại sau!';
                     $_SESSION['alert_type'] = 'error';
                     header('Location: index.php?screen=1');
@@ -108,9 +114,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'name' => $selectedProduct['name']
                 ];
 
+                // Commit transaction after successful prize selection
+                $pdo->commit();
                 header('Location: index.php?screen=2');
             }
         } catch(PDOException $e) {
+            // Rollback transaction on error
+            if (isset($pdo) && $pdo->inTransaction()) {
+                $pdo->rollback();
+            }
             $_SESSION['alert_message'] = 'Lỗi cơ sở dữ liệu: ' . $e->getMessage();
             $_SESSION['alert_type'] = 'error';
             header('Location: index.php?screen=1');
@@ -129,8 +141,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         try {
             $pdo = getDatabaseConnection();
+            $pdo->beginTransaction();
+
             // Double-check: Ensure phone number hasn't been used since entering screen 2
-            $stmt = $pdo->prepare("SELECT p.id, pr.name as prize_name, p.winning_index FROM participants p JOIN prizes pr ON p.prize_id = pr.id WHERE p.phone_number = ?");
+            // Use FOR UPDATE to prevent race condition
+            $stmt = $pdo->prepare("SELECT p.id, pr.name as prize_name, p.winning_index FROM participants p JOIN prizes pr ON p.prize_id = pr.id WHERE p.phone_number = ? FOR UPDATE");
             $stmt->execute([$phone]);
             $existingParticipant = $stmt->fetch();
 
@@ -142,6 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Clear session data
                 unset($_SESSION['selected_prize']);
                 unset($_SESSION['winning_index']);
+                $pdo->commit();
                 header('Location: index.php?screen=3');
                 exit();
             }
@@ -178,6 +194,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 return $_SERVER['REMOTE_ADDR'] ?? 'unknown';
             }
 
+            // Check and lock prize stock to prevent race condition
+            $stmt = $pdo->prepare("SELECT stock, is_active FROM prizes WHERE id = ? FOR UPDATE");
+            $stmt->execute([$selectedPrize['id']]);
+            $prizeData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$prizeData || $prizeData['stock'] <= 0 || !$prizeData['is_active']) {
+                $pdo->rollback();
+
+                // Clear session data
+                unset($_SESSION['selected_prize']);
+                unset($_SESSION['winning_index']);
+
+                // Check if there are any available prizes left
+                $stmt = $pdo->prepare("SELECT COUNT(*) FROM prizes WHERE stock > 0 AND is_active = TRUE");
+                $stmt->execute();
+                $availablePrizes = $stmt->fetchColumn();
+
+                if ($availablePrizes > 0) {
+                    $_SESSION['alert_message'] = 'Xin lỗi, phần quà này đã hết hàng hoặc bị vô hiệu hóa. Vui lòng thử lại!';
+                } else {
+                    $_SESSION['alert_message'] = 'Xin lỗi, hiện tại không còn quà tặng nào. Vui lòng thử lại sau!';
+                }
+                $_SESSION['alert_type'] = 'error';
+                header('Location: index.php?screen=1');
+                exit();
+            }
+
             // Insert new participant with prize and tracking info
             $stmt = $pdo->prepare("INSERT INTO participants (phone_number, prize_id, winning_index, ip_address, user_agent, session_id) VALUES (?, ?, ?, ?, ?, ?)");
             $stmt->execute([
@@ -189,9 +232,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 session_id()
             ]);
 
-            // Decrease stock
-            $stmt = $pdo->prepare("UPDATE prizes SET stock = stock - 1 WHERE id = ? AND stock > 0");
+            // Decrease stock atomically (guaranteed to work since we locked the row)
+            $stmt = $pdo->prepare("UPDATE prizes SET stock = stock - 1 WHERE id = ?");
             $stmt->execute([$selectedPrize['id']]);
+
+            // Commit transaction
+            $pdo->commit();
 
             // Set prize in session
             $_SESSION['current_prize'] = ['name' => $selectedPrize['name']];
@@ -201,6 +247,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Location: index.php?screen=3');
 
         } catch(PDOException $e) {
+            // Rollback transaction on error
+            if (isset($pdo) && $pdo->inTransaction()) {
+                $pdo->rollback();
+            }
             $_SESSION['alert_message'] = 'Lỗi cơ sở dữ liệu: ' . $e->getMessage();
             $_SESSION['alert_type'] = 'error';
             header('Location: index.php?screen=1');

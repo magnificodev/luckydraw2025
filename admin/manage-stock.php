@@ -17,15 +17,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $isActive = (bool)$_POST['is_active'];
 
         try {
+            $pdo->beginTransaction();
+
+            // Use FOR UPDATE to prevent race condition when multiple admins update simultaneously
+            $stmt = $pdo->prepare("SELECT id FROM prizes WHERE id = ? FOR UPDATE");
+            $stmt->execute([$prizeId]);
+            $prizeExists = $stmt->fetch();
+
+            if (!$prizeExists) {
+                $pdo->rollback();
+                echo json_encode(['success' => false, 'message' => 'Phần quà không tồn tại']);
+                exit;
+            }
+
             $stmt = $pdo->prepare("UPDATE prizes SET stock = ?, is_active = ? WHERE id = ?");
             $result = $stmt->execute([$stock, $isActive, $prizeId]);
 
             if ($result) {
+                $pdo->commit();
                 echo json_encode(['success' => true, 'message' => 'Cập nhật thành công']);
             } else {
+                $pdo->rollback();
                 echo json_encode(['success' => false, 'message' => 'Không thể cập nhật dữ liệu']);
             }
         } catch(PDOException $e) {
+            if (isset($pdo) && $pdo->inTransaction()) {
+                $pdo->rollback();
+            }
             echo json_encode(['success' => false, 'message' => 'Lỗi database: ' . $e->getMessage()]);
         }
         exit;

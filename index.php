@@ -26,11 +26,40 @@ if (($screen == 2 || $screen == 3) && empty($_SESSION['current_phone'])) {
     exit();
 }
 
-// Additional check for screen 2: Must have winning index
-if ($screen == 2 && !isset($_SESSION['winning_index'])) {
-    // No winning index, redirect to screen 1
+// Additional check for screen 2: Must have winning index and selected prize
+if ($screen == 2 && (!isset($_SESSION['winning_index']) || !isset($_SESSION['selected_prize']))) {
+    // No winning index or selected prize, redirect to screen 1
     header('Location: index.php?screen=1');
     exit();
+}
+
+// Real-time check for screen 2: Verify selected prize is still available
+if ($screen == 2 && isset($_SESSION['selected_prize'])) {
+    try {
+        require_once 'config.php';
+        $pdo = getDatabaseConnection();
+        $stmt = $pdo->prepare("SELECT stock, is_active FROM prizes WHERE id = ?");
+        $stmt->execute([$_SESSION['selected_prize']['id']]);
+        $prizeData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$prizeData || $prizeData['stock'] <= 0 || !$prizeData['is_active']) {
+            // Prize is no longer available, clear session and redirect
+            unset($_SESSION['selected_prize']);
+            unset($_SESSION['winning_index']);
+            $_SESSION['alert_message'] = 'Xin lỗi, phần quà này đã hết hàng hoặc bị vô hiệu hóa. Vui lòng thử lại!';
+            $_SESSION['alert_type'] = 'error';
+            header('Location: index.php?screen=1');
+            exit();
+        }
+    } catch(PDOException $e) {
+        // Database error, redirect to screen 1
+        unset($_SESSION['selected_prize']);
+        unset($_SESSION['winning_index']);
+        $_SESSION['alert_message'] = 'Lỗi hệ thống. Vui lòng thử lại!';
+        $_SESSION['alert_type'] = 'error';
+        header('Location: index.php?screen=1');
+        exit();
+    }
 }
 ?>
 <!DOCTYPE html>

@@ -459,3 +459,20 @@ form#phoneForm {
         font-size: 0.9rem;
     }
 }
+
+/* Custom for Play Again Button */
+#playAgainBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+#playAgainBtn img {
+    max-width: 180px;
+    height: auto;
+}
+
+#playAgainBtn:hover {
+    transform: scale(1.05);
+}

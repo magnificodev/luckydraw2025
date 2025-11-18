@@ -145,6 +145,9 @@ if ($screen == 2 && isset($_SESSION['selected_prize'])) {
                         <?php echo htmlspecialchars($_SESSION['current_prize']['name'] ?? ''); ?>
                     </h2>
                 </div>
+                <button id="playAgainBtn" class="play-again-button" onclick="window.location.href='index.php?screen=1'">
+                    <img src="./assets/images/playagain-button.png" alt="Chơi lại" />
+                </button>
             </div>
         </div>
     <?php endif; ?>
